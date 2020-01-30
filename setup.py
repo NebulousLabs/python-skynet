@@ -11,7 +11,7 @@ setuptools.setup(
     description="Nebulous SDK",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://https://gitlab.com/pjbrone/python-nebulous",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
