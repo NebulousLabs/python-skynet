@@ -1,11 +1,15 @@
+import random
+import string
+
 import requests
+
 
 class Skynet:
     @staticmethod
     def default_upload_options():
         return type('obj', (object,), {
             'portalUrl': 'https://siasky.net',
-            'portalUploadPath' : '/api/skyfile',
+            'portalUploadPath' : 'skynet/skyfile',
             'portalFileFieldname' : 'file',
             'customFilename':''
         })
@@ -27,8 +31,11 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_upload_options()
 
+        charset = string.ascii_lowercase
+        uuid = ''.join(random.choice(charset) for i in range(16))
+
         with open(path, 'rb') as f:
-            r = requests.post("%s%s" % (opts.portalUrl, opts.portalUploadPath), files={opts.portalFileFieldname: f})
+            r = requests.post("%s/%s/%s" % (opts.portalUrl, opts.portalUploadPath, uuid), files={opts.portalFileFieldname: f})
             response = r.json()
             return "sia://" + response["skylink"]
 
