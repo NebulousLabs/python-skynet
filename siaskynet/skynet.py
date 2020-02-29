@@ -28,6 +28,10 @@ class Skynet:
 
     @staticmethod
     def UploadFile(path, opts=None):
+        return "sia://" + Skynet.PostUploadFile(path, opts)["skylink"]
+
+    @staticmethod
+    def PostUploadFile(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -36,13 +40,17 @@ class Skynet:
 
         with open(path, 'rb') as f:
             r = requests.post("%s/%s/%s" % (opts.portalUrl, opts.portalUploadPath, uuid), files={opts.portalFileFieldname: f})
-            response = r.json()
-            return "sia://" + response["skylink"]
+            return r.json()
 
     @staticmethod
     def DownloadFile(path, skylink, opts=None):
+        r = Skynet.GetDownloadBuffer(path, skylink, opts)
+        open(path, 'wb').write(r.content)
+
+    @staticmethod
+    def GetDownloadBuffer(path, skylink, opts=None):
         if opts is None:
             opts = Skynet.default_download_options()
 
         r = requests.get("%s/%s" % (opts.portalUrl, Skynet.strip_prefix(skylink)),allow_redirects=True)
-        open(path, 'wb').write(r.content)
+        return r
