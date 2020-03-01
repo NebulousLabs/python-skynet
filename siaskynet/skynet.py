@@ -44,11 +44,11 @@ class Skynet:
 
     @staticmethod
     def DownloadFile(path, skylink, opts=None):
-        r = Skynet.GetDownloadBuffer(path, skylink, opts)
+        r = Skynet.GetDownloadBuffer(skylink, opts)
         open(path, 'wb').write(r.content)
 
     @staticmethod
-    def GetDownloadBuffer(path, skylink, opts=None):
+    def GetDownloadBuffer(skylink, opts=None):
         if opts is None:
             opts = Skynet.default_download_options()
 
