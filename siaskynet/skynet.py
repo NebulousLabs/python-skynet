@@ -28,10 +28,10 @@ class Skynet:
 
     @staticmethod
     def UploadFile(path, opts=None):
-        return "sia://" + Skynet.PostUploadFile(path, opts).json()["skylink"]
+        return "sia://" + Skynet.UploadFileRequest(path, opts).json()["skylink"]
 
     @staticmethod
-    def PostUploadFile(path, opts=None):
+    def UploadFileRequest(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -44,11 +44,11 @@ class Skynet:
 
     @staticmethod
     def DownloadFile(path, skylink, opts=None):
-        r = Skynet.GetDownloadBuffer(skylink, opts)
+        r = Skynet.DownloadFileRequest(skylink, opts)
         open(path, 'wb').write(r.content)
 
     @staticmethod
-    def GetDownloadBuffer(skylink, opts=None):
+    def DownloadFileRequest(skylink, opts=None):
         if opts is None:
             opts = Skynet.default_download_options()
 
