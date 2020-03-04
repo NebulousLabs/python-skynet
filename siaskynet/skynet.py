@@ -1,3 +1,4 @@
+import os
 import random
 import string
 
@@ -9,9 +10,10 @@ class Skynet:
     def default_upload_options():
         return type('obj', (object,), {
             'portalUrl': 'https://siasky.net',
-            'portalUploadPath' : 'skynet/skyfile',
-            'portalFileFieldname' : 'file',
-            'customFilename':''
+            'portalUploadPath': 'skynet/skyfile',
+            'portalFileFieldname': 'file',
+            'portalDirectoryFileFieldname': 'files[]',
+            'customFilename': ''
         })
 
     @staticmethod
@@ -39,8 +41,41 @@ class Skynet:
         uuid = ''.join(random.choice(charset) for i in range(16))
 
         with open(path, 'rb') as f:
-            r = requests.post("%s/%s/%s" % (opts.portalUrl, opts.portalUploadPath, uuid), files={opts.portalFileFieldname: f})
-            return r
+            host = opts.portalUrl
+            path = opts.portalUploadPath
+            url = f'{host}/{path}/{uuid}'
+            r = requests.post(url, files={opts.portalFileFieldname: f})
+        return r
+
+    @staticmethod
+    def UploadDirectory(path, opts=None):
+        return "sia://" + Skynet.UploadDirectoryRequest(path, opts).json()["skylink"]
+
+    @staticmethod
+    def UploadDirectoryRequest(path, opts=None):
+        if os.path.isdir(path) == False:
+            print("Given path is not a directory")
+            return
+
+        if opts is None:
+            opts = Skynet.default_upload_options()
+
+        ftuples = []
+        files = list(Skynet.walkDirectory(path).keys())
+        for file in files:
+            ftuples.append((opts.portalDirectoryFileFieldname,
+                            (file, open(file, 'rb'))))
+
+        charset = string.ascii_lowercase
+        uuid = ''.join(random.choice(charset) for i in range(16))
+
+        filename = opts.customFilename if opts.customFilename else path
+
+        host = opts.portalUrl
+        path = opts.portalUploadPath
+        url = f'{host}/{path}/{uuid}?filename={filename}'
+        r = requests.post(url, files=ftuples)
+        return r
 
     @staticmethod
     def DownloadFile(path, skylink, opts=None):
@@ -52,5 +87,19 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_download_options()
 
-        r = requests.get("%s/%s" % (opts.portalUrl, Skynet.strip_prefix(skylink)),allow_redirects=True)
+        portal = opts.portalUrl
+        skylink = Skynet.strip_prefix(skylink)
+        url = f'{portal}/{skylink}'
+        r = requests.get(url, allow_redirects=True)
         return r
+
+    @staticmethod
+    def walkDirectory(path):
+        files = {}
+        for root, subdirs, subfiles in os.walk(path):
+            for subdir in subdirs:
+                files.update(Skynet.walkDirectory(os.path.join(root, subdir)))
+            for subfile in subfiles:
+                fullpath = os.path.join(root, subfile)
+                files[fullpath] = True
+        return files
