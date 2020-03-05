@@ -29,11 +29,11 @@ class Skynet:
         return str
 
     @staticmethod
-    def UploadFile(path, opts=None):
+    def upload_file(path, opts=None):
         return "sia://" + Skynet.UploadFileRequest(path, opts).json()["skylink"]
 
     @staticmethod
-    def UploadFileRequest(path, opts=None):
+    def upload_file_request(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -48,11 +48,11 @@ class Skynet:
         return r
 
     @staticmethod
-    def UploadDirectory(path, opts=None):
+    def upload_directory(path, opts=None):
         return "sia://" + Skynet.UploadDirectoryRequest(path, opts).json()["skylink"]
 
     @staticmethod
-    def UploadDirectoryRequest(path, opts=None):
+    def upload_directory_request(path, opts=None):
         if os.path.isdir(path) == False:
             print("Given path is not a directory")
             return
@@ -78,12 +78,12 @@ class Skynet:
         return r
 
     @staticmethod
-    def DownloadFile(path, skylink, opts=None):
+    def download_file(path, skylink, opts=None):
         r = Skynet.DownloadFileRequest(skylink, opts)
         open(path, 'wb').write(r.content)
 
     @staticmethod
-    def DownloadFileRequest(skylink, opts=None):
+    def download_file_request(skylink, opts=None):
         if opts is None:
             opts = Skynet.default_download_options()
 
@@ -94,7 +94,7 @@ class Skynet:
         return r
 
     @staticmethod
-    def walkDirectory(path):
+    def walk_directory(path):
         files = {}
         for root, subdirs, subfiles in os.walk(path):
             for subdir in subdirs:
