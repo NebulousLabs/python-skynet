@@ -6,6 +6,11 @@ import requests
 
 
 class Skynet:
+
+    @staticmethod
+    def uri_skynet_prefix():
+        return "sia://"
+
     @staticmethod
     def default_upload_options():
         return type('obj', (object,), {
@@ -24,13 +29,13 @@ class Skynet:
 
     @staticmethod
     def strip_prefix(str):
-        if str.startswith("sia://"):
-            return str[len("sia://"):]
+        if str.startswith(Skynet.uri_skynet_prefix()):
+            return str[len(Skynet.uri_skynet_prefix()):]
         return str
 
     @staticmethod
     def UploadFile(path, opts=None):
-        return "sia://" + Skynet.UploadFileRequest(path, opts).json()["skylink"]
+        return Skynet.uri_skynet_prefix() + Skynet.UploadFileRequest(path, opts).json()["skylink"]
 
     @staticmethod
     def UploadFileRequest(path, opts=None):
@@ -49,7 +54,7 @@ class Skynet:
 
     @staticmethod
     def UploadDirectory(path, opts=None):
-        return "sia://" + Skynet.UploadDirectoryRequest(path, opts).json()["skylink"]
+        return Skynet.uri_skynet_prefix() + Skynet.UploadDirectoryRequest(path, opts).json()["skylink"]
 
     @staticmethod
     def UploadDirectoryRequest(path, opts=None):
