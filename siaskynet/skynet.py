@@ -38,7 +38,7 @@ class Skynet:
             opts = Skynet.default_upload_options()
 
         charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
+        uuid = ''.join(random.choice(charset) for _ in range(16))
 
         with open(path, 'rb') as f:
             host = opts.portalUrl
@@ -67,7 +67,7 @@ class Skynet:
                             (file, open(file, 'rb'))))
 
         charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
+        uuid = ''.join(random.choice(charset) for _ in range(16))
 
         filename = opts.customFilename if opts.customFilename else path
 
