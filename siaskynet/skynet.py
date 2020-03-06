@@ -37,13 +37,10 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_upload_options()
 
-        charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
-
         with open(path, 'rb') as f:
             host = opts.portalUrl
             path = opts.portalUploadPath
-            url = f'{host}/{path}/{uuid}'
+            url = f'{host}/{path}'
             r = requests.post(url, files={opts.portalFileFieldname: f})
         return r
 
@@ -66,14 +63,11 @@ class Skynet:
             ftuples.append((opts.portalDirectoryFileFieldname,
                             (file, open(file, 'rb'))))
 
-        charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
-
         filename = opts.customFilename if opts.customFilename else path
 
         host = opts.portalUrl
         path = opts.portalUploadPath
-        url = f'{host}/{path}/{uuid}?filename={filename}'
+        url = f'{host}/{path}?filename={filename}'
         r = requests.post(url, files=ftuples)
         return r
 
