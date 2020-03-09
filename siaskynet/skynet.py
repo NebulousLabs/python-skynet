@@ -1,11 +1,15 @@
 import os
-import random
 import string
 
 import requests
 
 
 class Skynet:
+
+    @staticmethod
+    def uri_skynet_prefix():
+        return "sia://"
+
     @staticmethod
     def default_upload_options():
         return type('obj', (object,), {
@@ -19,37 +23,48 @@ class Skynet:
     @staticmethod
     def default_download_options():
         return type('obj', (object,), {
-            'portalUrl': 'https://siasky.net',
+            'portal_url': 'https://siasky.net',
         })
 
     @staticmethod
     def strip_prefix(str):
-        if str.startswith("sia://"):
-            return str[len("sia://"):]
+        if str.startswith(Skynet.uri_skynet_prefix()):
+            return str[len(Skynet.uri_skynet_prefix()):]
         return str
 
     @staticmethod
     def upload_file(path, opts=None):
-        return "sia://" + Skynet.upload_file_request(path, opts).json()["skylink"]
+        return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts).json()["skylink"]
 
     @staticmethod
     def upload_file_request(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
-        charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
-
         with open(path, 'rb') as f:
             host = opts.portal_url
             path = opts.portal_upload_path
-            url = f'{host}/{path}/{uuid}'
+            url = f'{host}/{path}'
             r = requests.post(url, files={opts.portal_file_fieldname: f})
         return r
 
     @staticmethod
+    def upload_file_request_with_chunks(path, opts=None):
+        if opts is None:
+            opts = Skynet.default_upload_options()
+
+        filename = opts.custom_filename if opts.custom_filename else path
+
+        r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path,
+                                                 filename), data=path, headers={'Content-Type': 'application/octet-stream'})
+        return r
+
+    @staticmethod
     def upload_directory(path, opts=None):
-        return "sia://" + Skynet.upload_directory_request(path, opts).json()["skylink"]
+        r = Skynet.upload_directory_request(path, opts)
+        sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
+        r.close()
+        return sia_url
 
     @staticmethod
     def upload_directory_request(path, opts=None):
@@ -66,14 +81,11 @@ class Skynet:
             ftuples.append((opts.portal_directory_file_fieldname,
                             (file, open(file, 'rb'))))
 
-        charset = string.ascii_lowercase
-        uuid = ''.join(random.choice(charset) for i in range(16))
-
         filename = opts.custom_filename if opts.custom_filename else path
 
         host = opts.portal_url
         path = opts.portal_upload_path
-        url = f'{host}/{path}/{uuid}?filename={filename}'
+        url = f'{host}/{path}?filename={filename}'
         r = requests.post(url, files=ftuples)
         return r
 
@@ -81,16 +93,17 @@ class Skynet:
     def download_file(path, skylink, opts=None):
         r = Skynet.download_file_request(skylink, opts)
         open(path, 'wb').write(r.content)
+        r.close()
 
     @staticmethod
-    def download_file_request(skylink, opts=None):
+    def download_file_request(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.get(url, allow_redirects=True)
+        r = requests.get(url, allow_redirects=True, stream=stream)
         return r
 
     @staticmethod
