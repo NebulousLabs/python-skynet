@@ -1,5 +1,4 @@
 import os
-import random
 import string
 
 import requests
@@ -50,8 +49,21 @@ class Skynet:
         return r
 
     @staticmethod
+    def UploadFileRequestWithChunks(path, opts=None):
+        if opts is None:
+            opts = Skynet.default_upload_options()
+
+        filename = opts.customFilename if opts.customFilename else path
+
+        r = requests.post("%s/%s?filename=%s" % (opts.portalUrl, opts.portalUploadPath, filename), data=path, headers={'Content-Type': 'application/octet-stream'})
+        return r
+
+    @staticmethod
     def UploadDirectory(path, opts=None):
-        return Skynet.uri_skynet_prefix() + Skynet.UploadDirectoryRequest(path, opts).json()["skylink"]
+        r = Skynet.UploadDirectoryRequest(path, opts)
+        sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
+        r.close()
+        return sia_url
 
     @staticmethod
     def UploadDirectoryRequest(path, opts=None):
@@ -80,17 +92,22 @@ class Skynet:
     def DownloadFile(path, skylink, opts=None):
         r = Skynet.DownloadFileRequest(skylink, opts)
         open(path, 'wb').write(r.content)
+        r.close()
 
     @staticmethod
-    def DownloadFileRequest(skylink, opts=None):
+    def DownloadFileRequest(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
         portal = opts.portalUrl
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.get(url, allow_redirects=True)
+        r = requests.get(url, allow_redirects=True, stream=stream)
         return r
+
+    @staticmethod
+    def DownloadFileRequestWithChunks(skylink, opts=None):
+        return Skynet.DownloadFileRequest(skylink, opts, True)
 
     @staticmethod
     def walkDirectory(path):
