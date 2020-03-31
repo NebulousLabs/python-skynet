@@ -1,3 +1,4 @@
+import json
 import os
 import string
 
@@ -104,6 +105,22 @@ class Skynet:
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
         r = requests.get(url, allow_redirects=True, stream=stream)
+        return r
+
+    @staticmethod
+    def metadata(skylink, opts=None):
+        r = Skynet.metadata_request(skylink, opts)
+        return json.loads(r.headers["skynet-file-metadata"])
+
+    @staticmethod
+    def metadata_request(skylink, opts=None, stream=False):
+        if opts is None:
+            opts = Skynet.default_download_options()
+
+        portal = opts.portal_url
+        skylink = Skynet.strip_prefix(skylink)
+        url = f'{portal}/{skylink}'
+        r = requests.head(url, allow_redirects=True, stream=stream)
         return r
 
     @staticmethod
