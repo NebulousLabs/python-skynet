@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import string
 
 import requests
@@ -14,7 +15,11 @@ class Skynet:
     @staticmethod
     def default_upload_options():
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
+            'portal_url': [
+                'https://siasky.net',
+                'https://skynethub.io',
+                'https://skynet.tutemwesi.com'
+            ],
             'portal_upload_path': 'skynet/skyfile',
             'portal_file_fieldname': 'file',
             'portal_directory_file_fieldname': 'files[]',
@@ -24,7 +29,11 @@ class Skynet:
     @staticmethod
     def default_download_options():
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
+            'portal_url': [
+                'https://siasky.net',
+                'https://skynethub.io',
+                'https://skynet.tutemwesi.com'
+            ]
         })
 
     @staticmethod
@@ -32,6 +41,12 @@ class Skynet:
         if str.startswith(Skynet.uri_skynet_prefix()):
             return str[len(Skynet.uri_skynet_prefix()):]
         return str
+
+    @staticmethod
+    def choose_if_sequence(item):
+        if isinstance(item, list):
+            return random.choice(item)
+        return item
 
     @staticmethod
     def upload_file(path, opts=None):
@@ -42,8 +57,10 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_upload_options()
 
+        opts = Skynet.choose_if_sequence(opts)
+
         with open(path, 'rb') as f:
-            host = opts.portal_url
+            host = Skynet.choose_if_sequence(opts.portal_url)
             path = opts.portal_upload_path
             url = f'{host}/{path}'
             r = requests.post(url, files={opts.portal_file_fieldname: f})
@@ -54,9 +71,11 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_upload_options()
 
+        opts = Skynet.choose_if_sequence(opts)
+
         filename = opts.custom_filename if opts.custom_filename else path
 
-        r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path,
+        r = requests.post("%s/%s?filename=%s" % (Skynet.choose_if_sequence(opts.portal_url), opts.portal_upload_path,
                                                  filename), data=path, headers={'Content-Type': 'application/octet-stream'})
         return r
 
@@ -76,6 +95,8 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_upload_options()
 
+        opts = Skynet.choose_if_sequence(opts)
+
         ftuples = []
         files = list(Skynet.walk_directory(path).keys())
         for file in files:
@@ -84,7 +105,7 @@ class Skynet:
 
         filename = opts.custom_filename if opts.custom_filename else path
 
-        host = opts.portal_url
+        host = Skynet.choose_if_sequence(opts.portal_url)
         path = opts.portal_upload_path
         url = f'{host}/{path}?filename={filename}'
         r = requests.post(url, files=ftuples)
@@ -101,7 +122,9 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_download_options()
 
-        portal = opts.portal_url
+        opts = Skynet.choose_if_sequence(opts)
+
+        portal = Skynet.choose_if_sequence(opts.portal_url)
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
         r = requests.get(url, allow_redirects=True, stream=stream)
@@ -117,7 +140,9 @@ class Skynet:
         if opts is None:
             opts = Skynet.default_download_options()
 
-        portal = opts.portal_url
+        opts = Skynet.choose_if_sequence(opts)
+
+        portal = Skynet.choose_if_sequence(opts.portal_url)
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
         r = requests.head(url, allow_redirects=True, stream=stream)
