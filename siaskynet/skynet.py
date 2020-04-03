@@ -14,17 +14,17 @@ class Skynet:
 
     @staticmethod
     def default_upload_options():
-        return type('obj', (object,), {
+        return type('obj', (object,), [{
             'portal_url': [
-                'https://siasky.net',
-                'https://skynethub.io',
-                'https://skynet.tutemwesi.com'
+                'https://siasky.net'
+                #,'https://skynethub.io'
+                #,'https://skynet.tutemwesi.com'
             ],
             'portal_upload_path': 'skynet/skyfile',
             'portal_file_fieldname': 'file',
             'portal_directory_file_fieldname': 'files[]',
             'custom_filename': ''
-        })
+        }])
 
     @staticmethod
     def default_download_options():
