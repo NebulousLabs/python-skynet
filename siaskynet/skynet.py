@@ -110,6 +110,8 @@ class Skynet:
     @staticmethod
     def metadata(skylink, opts=None):
         r = Skynet.metadata_request(skylink, opts)
+        if r.status_code != 200:
+            return None
         result = {
             "Content-Length": r.headers["Content-Length"],
             "Content-Type": r.headers["Content-Type"],
