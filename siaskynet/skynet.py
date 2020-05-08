@@ -110,12 +110,15 @@ class Skynet:
     @staticmethod
     def metadata(skylink, opts=None):
         r = Skynet.metadata_request(skylink, opts)
-        return {
+        result = {
             "Content-Length": r.headers["Content-Length"],
             "Content-Type": r.headers["Content-Type"],
-            "Content-Disposition": r.headers["Content-Disposition"],
-            "Skynet-File-Metadata": json.loads(r.headers["Skynet-File-Metadata"])
         }
+        if "Content-Disposition" in r.headers:
+            result["Content-Disposition"] = r.headers["Content-Disposition"]
+        if "Skynet-File-Metadata" in r.headers:
+            result["Skynet-File-Metadata"] = json.loads(r.headers["Skynet-File-Metadata"])
+        return result
 
     @staticmethod
     def metadata_request(skylink, opts=None, stream=False):
