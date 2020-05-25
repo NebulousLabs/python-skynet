@@ -46,7 +46,8 @@ class Skynet:
             host = opts.portal_url
             path = opts.portal_upload_path
             url = f'{host}/{path}'
-            r = requests.post(url, files={opts.portal_file_fieldname: f})
+            filename = opts.custom_filename if opts.custom_filename else os.path.basename(f.name)
+            r = requests.post(url, files={opts.portal_file_fieldname: (filename, f)})
         return r
 
     @staticmethod
