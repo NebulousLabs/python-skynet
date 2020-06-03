@@ -18,7 +18,8 @@ class Skynet:
             'portal_upload_path': 'skynet/skyfile',
             'portal_file_fieldname': 'file',
             'portal_directory_file_fieldname': 'files[]',
-            'custom_filename': ''
+            'custom_filename': '',
+            'timeout': None
         })
 
     @staticmethod
@@ -46,7 +47,7 @@ class Skynet:
             host = opts.portal_url
             path = opts.portal_upload_path
             url = f'{host}/{path}'
-            r = requests.post(url, files={opts.portal_file_fieldname: f})
+            r = requests.post(url, files={opts.portal_file_fieldname: f}, timeout=opts.timeout)
         return r
 
     @staticmethod
@@ -56,8 +57,8 @@ class Skynet:
 
         filename = opts.custom_filename if opts.custom_filename else path
 
-        r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path,
-                                                 filename), data=path, headers={'Content-Type': 'application/octet-stream'})
+        r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path, filename),
+                                                data=path, headers={'Content-Type': 'application/octet-stream'}, timeout=opts.timeout)
         return r
 
     @staticmethod
@@ -87,7 +88,7 @@ class Skynet:
         host = opts.portal_url
         path = opts.portal_upload_path
         url = f'{host}/{path}?filename={filename}'
-        r = requests.post(url, files=ftuples)
+        r = requests.post(url, files=ftuples, timeout=opts.timeout)
         return r
 
     @staticmethod
@@ -104,7 +105,7 @@ class Skynet:
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.get(url, allow_redirects=True, stream=stream)
+        r = requests.get(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
         return r
 
     @staticmethod
@@ -120,7 +121,7 @@ class Skynet:
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.head(url, allow_redirects=True, stream=stream)
+        r = requests.head(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
         return r
 
     @staticmethod
