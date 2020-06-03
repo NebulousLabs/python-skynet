@@ -47,8 +47,10 @@ class Skynet:
             host = opts.portal_url
             path = opts.portal_upload_path
             url = f'{host}/{path}'
-            r = requests.post(url, files={opts.portal_file_fieldname: f}, timeout=opts.timeout)
-        return r
+            try:
+                return requests.post(url, files={opts.portal_file_fieldname: f}, timeout=opts.timeout)
+            except requests.exceptions.Timeout:
+                raise TimeoutError('Request timed out')
 
     @staticmethod
     def upload_file_request_with_chunks(path, opts=None):
@@ -56,10 +58,11 @@ class Skynet:
             opts = Skynet.default_upload_options()
 
         filename = opts.custom_filename if opts.custom_filename else path
-
-        r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path, filename),
-                                                data=path, headers={'Content-Type': 'application/octet-stream'}, timeout=opts.timeout)
-        return r
+        try:
+            return requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path, filename),
+                                     data=path, headers={'Content-Type': 'application/octet-stream'}, timeout=opts.timeout)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def upload_directory(path, opts=None):
@@ -88,8 +91,10 @@ class Skynet:
         host = opts.portal_url
         path = opts.portal_upload_path
         url = f'{host}/{path}?filename={filename}'
-        r = requests.post(url, files=ftuples, timeout=opts.timeout)
-        return r
+        try:
+            return requests.post(url, files=ftuples, timeout=opts.timeout)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def download_file(path, skylink, opts=None):
@@ -105,8 +110,10 @@ class Skynet:
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.get(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
-        return r
+        try:
+            return requests.get(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def metadata(skylink, opts=None):
@@ -121,8 +128,11 @@ class Skynet:
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.head(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
-        return r
+        
+        try:
+            return requests.head(url, allow_redirects=True, stream=stream, timeout=opts.timeout)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def walk_directory(path):
