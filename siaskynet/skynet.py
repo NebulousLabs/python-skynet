@@ -12,20 +12,55 @@ class Skynet:
         return "sia://"
 
     @staticmethod
-    def default_upload_options():
+    def fill_with_default_options(opts):
+        try:
+            portal_url = opts.portal_url
+        except:
+            portal_url = 'https://siasky.net'
+            
+        try:
+            portal_upload_path = opts.portal_upload_path
+        except:
+            portal_upload_path = 'skynet/skyfile'
+            
+        try:
+            portal_file_fieldname = opts.portal_file_fieldname
+        except:
+            portal_file_fieldname = 'file'
+            
+        try:
+            portal_directory_file_fieldname = opts.portal_directory_file_fieldname
+        except:
+            portal_directory_file_fieldname = 'files[]'
+            
+        try:
+            custom_filename = opts.custom_filename
+        except:
+            custom_filename = ''
+            
+        try:
+            timeout = opts.timeout
+        except:
+            timeout = None
+            
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
-            'portal_upload_path': 'skynet/skyfile',
-            'portal_file_fieldname': 'file',
-            'portal_directory_file_fieldname': 'files[]',
-            'custom_filename': '',
-            'timeout': None
+            'portal_url': portal_url,
+            'portal_upload_path': portal_upload_path,
+            'portal_file_fieldname': portal_file_fieldname,
+            'portal_directory_file_fieldname': portal_directory_file_fieldname,
+            'custom_filename': custom_filename,
+            'timeout': timeout
         })
 
     @staticmethod
-    def default_download_options():
+    def fill_with_default_download_options(opts):
+        try:
+            portal_url = opts.portal_url
+        except:
+            portal_url = 'https://siasky.net'
+
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
+            'portal_url': portal_url,
         })
 
     @staticmethod
@@ -40,8 +75,7 @@ class Skynet:
 
     @staticmethod
     def upload_file_request(path, opts=None):
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.fill_with_default_options(opts)
 
         with open(path, 'rb') as f:
             host = opts.portal_url
@@ -54,8 +88,7 @@ class Skynet:
 
     @staticmethod
     def upload_file_request_with_chunks(path, opts=None):
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.fill_with_default_options(opts)
 
         filename = opts.custom_filename if opts.custom_filename else path
         try:
@@ -77,8 +110,7 @@ class Skynet:
             print("Given path is not a directory")
             return
 
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.fill_with_default_options(opts)
 
         ftuples = []
         files = list(Skynet.walk_directory(path).keys())
@@ -104,8 +136,7 @@ class Skynet:
 
     @staticmethod
     def download_file_request(skylink, opts=None, stream=False):
-        if opts is None:
-            opts = Skynet.default_download_options()
+        opts = Skynet.fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
@@ -122,8 +153,7 @@ class Skynet:
 
     @staticmethod
     def metadata_request(skylink, opts=None, stream=False):
-        if opts is None:
-            opts = Skynet.default_download_options()
+        opts = Skynet.fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.strip_prefix(skylink)
