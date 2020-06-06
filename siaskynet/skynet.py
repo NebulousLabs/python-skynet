@@ -34,11 +34,11 @@ class Skynet:
         return str
 
     @staticmethod
-    def upload_file(path, opts=None):
-        return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts).json()["skylink"]
+    def upload_file(path, opts=None, timeout=6):
+        return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts, timeout).json()["skylink"]
 
     @staticmethod
-    def upload_file_request(path, opts=None):
+    def upload_file_request(path, opts=None, timeout=6):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -46,29 +46,29 @@ class Skynet:
             host = opts.portal_url
             path = opts.portal_upload_path
             url = f'{host}/{path}'
-            r = requests.post(url, files={opts.portal_file_fieldname: f})
+            r = requests.post(url, files={opts.portal_file_fieldname: f}, timeout=timeout)
         return r
 
     @staticmethod
-    def upload_file_request_with_chunks(path, opts=None):
+    def upload_file_request_with_chunks(path, opts=None, timeout=6):
         if opts is None:
             opts = Skynet.default_upload_options()
 
         filename = opts.custom_filename if opts.custom_filename else path
 
         r = requests.post("%s/%s?filename=%s" % (opts.portal_url, opts.portal_upload_path,
-                                                 filename), data=path, headers={'Content-Type': 'application/octet-stream'})
+                                                 filename), data=path, headers={'Content-Type': 'application/octet-stream'}, timeout=timeout)
         return r
 
     @staticmethod
-    def upload_directory(path, opts=None):
-        r = Skynet.upload_directory_request(path, opts)
+    def upload_directory(path, opts=None, timeout=6):
+        r = Skynet.upload_directory_request(path, opts, timeout=timeout)
         sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
         r.close()
         return sia_url
 
     @staticmethod
-    def upload_directory_request(path, opts=None):
+    def upload_directory_request(path, opts=None, timeout=6):
         if os.path.isdir(path) == False:
             print("Given path is not a directory")
             return
@@ -87,40 +87,40 @@ class Skynet:
         host = opts.portal_url
         path = opts.portal_upload_path
         url = f'{host}/{path}?filename={filename}'
-        r = requests.post(url, files=ftuples)
+        r = requests.post(url, files=ftuples, timeout=timeout)
         return r
 
     @staticmethod
-    def download_file(path, skylink, opts=None):
-        r = Skynet.download_file_request(skylink, opts)
+    def download_file(path, skylink, opts=None, timeout=6):
+        r = Skynet.download_file_request(skylink, opts, timeout=timeout)
         open(path, 'wb').write(r.content)
         r.close()
 
     @staticmethod
-    def download_file_request(skylink, opts=None, stream=False):
+    def download_file_request(skylink, opts=None, stream=False, timeout=6):
         if opts is None:
             opts = Skynet.default_download_options()
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.get(url, allow_redirects=True, stream=stream)
+        r = requests.get(url, allow_redirects=True, stream=stream, timeout=timeout)
         return r
 
     @staticmethod
-    def metadata(skylink, opts=None):
-        r = Skynet.metadata_request(skylink, opts)
+    def metadata(skylink, opts=None, timeout=6):
+        r = Skynet.metadata_request(skylink, opts, timeout=timeout)
         return json.loads(r.headers["skynet-file-metadata"])
 
     @staticmethod
-    def metadata_request(skylink, opts=None, stream=False):
+    def metadata_request(skylink, opts=None, stream=False, timeout=6):
         if opts is None:
             opts = Skynet.default_download_options()
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
         url = f'{portal}/{skylink}'
-        r = requests.head(url, allow_redirects=True, stream=stream)
+        r = requests.head(url, allow_redirects=True, stream=stream, timeout=timeout)
         return r
 
     @staticmethod
