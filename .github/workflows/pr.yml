@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pylint pytest
+        pip install flake8 pylint pytest requests
     - name: Lint
       run: |
         # stop the build if there are Python syntax errors or undefined names

@@ -1,3 +1,3 @@
 # Skynet SDK
 
-An SDK for integrating Skynet into python applications
+An SDK for integrating Skynet into Python applications.
