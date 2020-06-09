@@ -1,1 +1,1 @@
-from .skynet import Skynet 
+from .skynet import Skynet
