@@ -9,6 +9,7 @@ setuptools.setup(
     author="Peter-Jan Brone",
     author_email="peterjan.brone@gmail.com",
     description="Skynet SDK",
+    url="https://github.com/NebulousLabs/python-skynet",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),

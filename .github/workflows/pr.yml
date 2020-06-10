@@ -29,7 +29,7 @@ jobs:
       run: |
         flake8 siaskynet/ --count --show-source --statistics
         # Disable lint that complains about short names.
-        pylint siaskynet/ -d invalid-name
+        pylint siaskynet/ -d invalid-name,protected-access
     - name: Test
       run: |
         pytest
