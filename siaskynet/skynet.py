@@ -35,7 +35,7 @@ class Skynet:
 
     @staticmethod
     def upload_file(path, opts=None):
-        return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts).json()["skylink"]
+        return Skynet.uri_skynet_prefix() + Skynet.__upload_file_request(path, opts).json()["skylink"]
 
     @staticmethod
     def __upload_file_request(path, opts=None):
@@ -62,7 +62,7 @@ class Skynet:
 
     @staticmethod
     def upload_directory(path, opts=None):
-        r = Skynet.upload_directory_request(path, opts)
+        r = Skynet.__upload_directory_request(path, opts)
         sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
         r.close()
         return sia_url
@@ -77,7 +77,7 @@ class Skynet:
             opts = Skynet.default_upload_options()
 
         ftuples = []
-        files = list(Skynet.walk_directory(path).keys())
+        files = list(Skynet.__walk_directory(path).keys())
         for file in files:
             ftuples.append((opts.portal_directory_file_fieldname,
                             (file, open(file, 'rb'))))
@@ -92,7 +92,7 @@ class Skynet:
 
     @staticmethod
     def download_file(path, skylink, opts=None):
-        r = Skynet.download_file_request(skylink, opts)
+        r = Skynet.__download_file_request(skylink, opts)
         open(path, 'wb').write(r.content)
         r.close()
 
@@ -102,14 +102,14 @@ class Skynet:
             opts = Skynet.default_download_options()
 
         portal = opts.portal_url
-        skylink = Skynet.strip_prefix(skylink)
+        skylink = Skynet.__strip_prefix(skylink)
         url = f'{portal}/{skylink}'
         r = requests.get(url, allow_redirects=True, stream=stream)
         return r
 
     @staticmethod
     def metadata(skylink, opts=None):
-        r = Skynet.metadata_request(skylink, opts)
+        r = Skynet.__metadata_request(skylink, opts)
         return json.loads(r.headers["skynet-file-metadata"])
 
     @staticmethod
@@ -118,7 +118,7 @@ class Skynet:
             opts = Skynet.default_download_options()
 
         portal = opts.portal_url
-        skylink = Skynet.strip_prefix(skylink)
+        skylink = Skynet.__strip_prefix(skylink)
         url = f'{portal}/{skylink}'
         r = requests.head(url, allow_redirects=True, stream=stream)
         return r
@@ -128,7 +128,7 @@ class Skynet:
         files = {}
         for root, subdirs, subfiles in os.walk(path):
             for subdir in subdirs:
-                files.update(Skynet.walk_directory(os.path.join(root, subdir)))
+                files.update(Skynet.__walk_directory(os.path.join(root, subdir)))
             for subfile in subfiles:
                 fullpath = os.path.join(root, subfile)
                 files[fullpath] = True
