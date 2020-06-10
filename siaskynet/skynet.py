@@ -28,7 +28,7 @@ class Skynet:
         })
 
     @staticmethod
-    def strip_prefix(str):
+    def __strip_prefix(str):
         if str.startswith(Skynet.uri_skynet_prefix()):
             return str[len(Skynet.uri_skynet_prefix()):]
         return str
@@ -38,7 +38,7 @@ class Skynet:
         return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts).json()["skylink"]
 
     @staticmethod
-    def upload_file_request(path, opts=None):
+    def __upload_file_request(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -50,7 +50,7 @@ class Skynet:
         return r
 
     @staticmethod
-    def upload_file_request_with_chunks(path, opts=None):
+    def __upload_file_request_with_chunks(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -68,7 +68,7 @@ class Skynet:
         return sia_url
 
     @staticmethod
-    def upload_directory_request(path, opts=None):
+    def __upload_directory_request(path, opts=None):
         if os.path.isdir(path) == False:
             print("Given path is not a directory")
             return
@@ -97,7 +97,7 @@ class Skynet:
         r.close()
 
     @staticmethod
-    def download_file_request(skylink, opts=None, stream=False):
+    def __download_file_request(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
@@ -113,7 +113,7 @@ class Skynet:
         return json.loads(r.headers["skynet-file-metadata"])
 
     @staticmethod
-    def metadata_request(skylink, opts=None, stream=False):
+    def __metadata_request(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
@@ -124,7 +124,7 @@ class Skynet:
         return r
 
     @staticmethod
-    def walk_directory(path):
+    def __walk_directory(path):
         files = {}
         for root, subdirs, subfiles in os.walk(path):
             for subdir in subdirs:
