@@ -1,10 +1,7 @@
 name: Pull Request
 
-# Run daily and on PRs.
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  pull_request:
+# Run on PRs.
+on: [pull_request]
 
 jobs:
   build:
@@ -32,6 +29,6 @@ jobs:
         flake8 siaskynet/ --count --show-source --statistics
         # Disable lint that complains about short names.
         pylint siaskynet/ -d invalid-name
-    - name: Test with pytest
+    - name: Test
       run: |
         pytest
