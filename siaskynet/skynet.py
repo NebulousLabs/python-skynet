@@ -35,10 +35,10 @@ class Skynet:
 
     @staticmethod
     def upload_file(path, opts=None):
-        return Skynet.uri_skynet_prefix() + Skynet.__upload_file_request(path, opts).json()["skylink"]
+        return Skynet.uri_skynet_prefix() + Skynet.upload_file_request(path, opts).json()["skylink"]
 
     @staticmethod
-    def __upload_file_request(path, opts=None):
+    def upload_file_request(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -50,7 +50,7 @@ class Skynet:
         return r
 
     @staticmethod
-    def __upload_file_request_with_chunks(path, opts=None):
+    def upload_file_request_with_chunks(path, opts=None):
         if opts is None:
             opts = Skynet.default_upload_options()
 
@@ -62,13 +62,13 @@ class Skynet:
 
     @staticmethod
     def upload_directory(path, opts=None):
-        r = Skynet.__upload_directory_request(path, opts)
+        r = Skynet.upload_directory_request(path, opts)
         sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
         r.close()
         return sia_url
 
     @staticmethod
-    def __upload_directory_request(path, opts=None):
+    def upload_directory_request(path, opts=None):
         if os.path.isdir(path) == False:
             print("Given path is not a directory")
             return
@@ -92,12 +92,12 @@ class Skynet:
 
     @staticmethod
     def download_file(path, skylink, opts=None):
-        r = Skynet.__download_file_request(skylink, opts)
+        r = Skynet.download_file_request(skylink, opts)
         open(path, 'wb').write(r.content)
         r.close()
 
     @staticmethod
-    def __download_file_request(skylink, opts=None, stream=False):
+    def download_file_request(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
@@ -109,11 +109,11 @@ class Skynet:
 
     @staticmethod
     def metadata(skylink, opts=None):
-        r = Skynet.__metadata_request(skylink, opts)
+        r = Skynet.metadata_request(skylink, opts)
         return json.loads(r.headers["skynet-file-metadata"])
 
     @staticmethod
-    def __metadata_request(skylink, opts=None, stream=False):
+    def metadata_request(skylink, opts=None, stream=False):
         if opts is None:
             opts = Skynet.default_download_options()
 
