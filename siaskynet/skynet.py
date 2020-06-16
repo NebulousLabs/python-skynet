@@ -59,8 +59,14 @@ class Skynet:
         except:
             portal_url = 'https://siasky.net'
 
+        try:
+            timeout = opts.timeout
+        except:
+            timeout = None
+
         return type('obj', (object,), {
             'portal_url': portal_url,
+            'timeout': timeout
         })
 
     @staticmethod
