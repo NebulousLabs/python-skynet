@@ -61,8 +61,8 @@ class Skynet:
                 timeout = opts.timeout_seconds
             else:
                 timeout = Skynet.default_upload_options().timeout_seconds
-            r = requests.post(url, files={opts.portal_file_fieldname: fd}, \
-                    timeout=timeout)
+            r = requests.post(url, files={opts.portal_file_fieldname: fd},
+                              timeout=timeout)
         return r
 
     @staticmethod
@@ -139,8 +139,8 @@ class Skynet:
             timeout = opts.timeout_seconds
         else:
             timeout = Skynet.default_upload_options().timeout_seconds
-        r = requests.get(url, allow_redirects=True, stream=stream, \
-                timeout=timeout)
+        r = requests.get(url, allow_redirects=True, stream=stream,
+                         timeout=timeout)
         return r
 
     @staticmethod
@@ -162,8 +162,8 @@ class Skynet:
             timeout = opts.timeout_seconds
         else:
             timeout = Skynet.default_upload_options().timeout_seconds
-        r = requests.head(url, allow_redirects=True, stream=stream, \
-                timeout=timeout)
+        r = requests.head(url, allow_redirects=True, stream=stream,
+                          timeout=timeout)
         return r
 
     @staticmethod
