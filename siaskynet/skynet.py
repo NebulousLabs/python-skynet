@@ -16,7 +16,7 @@ class Skynet:
         return "sia://"
 
     @staticmethod
-    def fill_with_default_options(opts):
+    def default_upload_options(opts = None):
         """Fills in missing options with the default upload options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
         portal_upload_path = \
@@ -25,7 +25,7 @@ class Skynet:
         portal_directory_file_fieldname = \
             getattr(opts, 'portal_directory_file_fieldname', 'files[]')
         custom_filename = getattr(opts, 'custom_filename', '')
-        timeout = getattr(opts, 'timeout', None)
+        timeout_seconds = getattr(opts, 'timeout_seconds', None)
 
         return type('obj', (object,), {
             'portal_url': portal_url,
@@ -33,18 +33,18 @@ class Skynet:
             'portal_file_fieldname': portal_file_fieldname,
             'portal_directory_file_fieldname': portal_directory_file_fieldname,
             'custom_filename': custom_filename,
-            'timeout': timeout
+            'timeout_seconds': timeout_seconds
         })
 
     @staticmethod
-    def fill_with_default_download_options(opts):
+    def default_download_options(opts = None):
         """Fills in missing options with the default download options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
-        timeout = getattr(opts, 'timeout', None)
+        timeout_seconds = getattr(opts, 'timeout_seconds', None)
 
         return type('obj', (object,), {
             'portal_url': portal_url,
-            'timeout': timeout
+            'timeout_seconds': timeout_seconds
         })
 
     @staticmethod
@@ -73,7 +73,7 @@ class Skynet:
             try:
                 return requests.post(url,
                                      files={opts.portal_file_fieldname: fd},
-                                     timeout=opts.timeout)
+                                     timeout=opts.timeout_seconds)
             except requests.exceptions.Timeout:
                 raise TimeoutError('Request timed out')
 
@@ -89,7 +89,7 @@ class Skynet:
 
         try:
             return requests.post(url, data=path, headers=headers,
-                                 timeout=opts.timeout)
+                                 timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
@@ -122,7 +122,7 @@ class Skynet:
         path = opts.portal_upload_path
         url = "%s/%s?filename=%s" % (host, path, filename)
         try:
-            return requests.post(url, files=ftuples, timeout=opts.timeout)
+            return requests.post(url, files=ftuples, timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
@@ -145,7 +145,7 @@ class Skynet:
 
         try:
             return requests.get(url, allow_redirects=True, stream=stream,
-                                timeout=opts.timeout)
+                                timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
@@ -166,7 +166,7 @@ class Skynet:
 
         try:
             return requests.head(url, allow_redirects=True, stream=stream,
-                                 timeout=opts.timeout)
+                                 timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
