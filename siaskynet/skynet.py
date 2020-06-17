@@ -19,7 +19,7 @@ class Skynet:
     def default_upload_options():
         return Skynet.__fill_with_default_upload_options()
 
-    def __fill_with_default_upload_options(opts = None):
+    def __fill_with_default_upload_options(opts=None):
         """Fills in missing options with the default upload options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
         portal_upload_path = \
@@ -44,7 +44,7 @@ class Skynet:
         return Skynet.__fill_with_default_download_options()
 
     @staticmethod
-    def __fill_with_default_download_options(opts = None):
+    def __fill_with_default_download_options(opts=None):
         """Fills in missing options with the default download options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
         timeout_seconds = getattr(opts, 'timeout_seconds', None)
@@ -130,7 +130,7 @@ class Skynet:
         url = "%s/%s?filename=%s" % (host, path, filename)
         try:
             return requests.post(url, files=ftuples,
-                            timeout=opts.timeout_seconds)
+                                 timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
