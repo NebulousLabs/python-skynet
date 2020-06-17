@@ -122,7 +122,8 @@ class Skynet:
         path = opts.portal_upload_path
         url = "%s/%s?filename=%s" % (host, path, filename)
         try:
-            return requests.post(url, files=ftuples, timeout=opts.timeout_seconds)
+            return requests.post(url, files=ftuples,
+                            timeout=opts.timeout_seconds)
         except requests.exceptions.Timeout:
             raise TimeoutError('Request timed out')
 
@@ -140,7 +141,6 @@ class Skynet:
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
-        portal = opts.portal_url
         url = portal+'/'+skylink
 
         try:
