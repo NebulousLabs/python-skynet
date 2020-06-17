@@ -16,7 +16,10 @@ class Skynet:
         return "sia://"
 
     @staticmethod
-    def default_upload_options(opts = None):
+    def default_upload_options():
+        return Skynet.__fill_with_default_upload_options()
+
+    def __fill_with_default_upload_options(opts = None):
         """Fills in missing options with the default upload options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
         portal_upload_path = \
@@ -37,7 +40,11 @@ class Skynet:
         })
 
     @staticmethod
-    def default_download_options(opts = None):
+    def default_download_options():
+        return Skynet.__fill_with_default_download_options()
+
+    @staticmethod
+    def __fill_with_default_download_options(opts = None):
         """Fills in missing options with the default download options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
         timeout_seconds = getattr(opts, 'timeout_seconds', None)
@@ -63,7 +70,7 @@ class Skynet:
     @staticmethod
     def upload_file_request(path, opts=None):
         """Posts request to upload file."""
-        opts = Skynet.default_upload_options(opts)
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         with open(path, 'rb') as fd:
             host = opts.portal_url
@@ -80,7 +87,7 @@ class Skynet:
     @staticmethod
     def upload_file_request_with_chunks(path, opts=None):
         """Posts request to upload file with chunks."""
-        opts = Skynet.default_upload_options(opts)
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         filename = opts.custom_filename if opts.custom_filename else path
         url = "%s/%s?filename=%s" % \
@@ -108,7 +115,7 @@ class Skynet:
             print("Given path is not a directory")
             return None
 
-        opts = Skynet.default_upload_options(opts)
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         ftuples = []
         files = list(Skynet.__walk_directory(path).keys())
@@ -137,7 +144,7 @@ class Skynet:
     @staticmethod
     def download_file_request(skylink, opts=None, stream=False):
         """Posts request to download file."""
-        opts = Skynet.default_download_options(opts)
+        opts = Skynet.__fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
@@ -158,7 +165,7 @@ class Skynet:
     @staticmethod
     def metadata_request(skylink, opts=None, stream=False):
         """Posts request to get metadata from given skylink."""
-        opts = Skynet.default_download_options(opts)
+        opts = Skynet.__fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
