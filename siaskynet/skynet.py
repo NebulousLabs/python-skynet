@@ -13,12 +13,14 @@ class Skynet:
     @staticmethod
     def uri_skynet_prefix():
         """Returns the Skynet URI prefix."""
-        return "sia://"
+        return "sia://z"
 
     @staticmethod
     def default_upload_options():
+        """Returns the default upload options."""
         return Skynet.__fill_with_default_upload_options()
 
+    @staticmethod
     def __fill_with_default_upload_options(opts=None):
         """Fills in missing options with the default upload options."""
         portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
@@ -41,6 +43,7 @@ class Skynet:
 
     @staticmethod
     def default_download_options():
+        """Returns the default download options."""
         return Skynet.__fill_with_default_download_options()
 
     @staticmethod
