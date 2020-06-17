@@ -13,7 +13,7 @@ class Skynet:
     @staticmethod
     def uri_skynet_prefix():
         """Returns the Skynet URI prefix."""
-        return "sia://z"
+        return "sia://"
 
     @staticmethod
     def default_upload_options():
