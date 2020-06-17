@@ -27,7 +27,7 @@ jobs:
     - name: Lint
       if: matrix.python-version >= 3.0
       run: |
-        flake8 siaskynet/ --count --show-source --statistics
+        flake8 siaskynet/ --count --show-source --statistics --per-file-ignores="__init__.py:F401"
         # Disable lint that complains about short names.
         pylint siaskynet/ -d invalid-name,protected-access
     - name: Test
