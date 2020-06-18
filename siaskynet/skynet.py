@@ -123,8 +123,9 @@ class Skynet:
         ftuples = []
         files = list(Skynet.__walk_directory(path).keys())
         for filepath in files:
+            assert filepath.startswith(path)
             ftuples.append((opts.portal_directory_file_fieldname,
-                            (filepath, open(filepath, 'rb'))))
+                            (filepath[len(path):], open(filepath, 'rb'))))
 
         filename = opts.custom_filename if opts.custom_filename else path
 
