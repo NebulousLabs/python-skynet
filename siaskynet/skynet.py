@@ -18,19 +18,43 @@ class Skynet:
     @staticmethod
     def default_upload_options():
         """Returns the default upload options."""
+        return Skynet.__fill_with_default_upload_options()
+
+    @staticmethod
+    def __fill_with_default_upload_options(opts=None):
+        """Fills in missing options with the default upload options."""
+        portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
+        portal_upload_path = \
+            getattr(opts, 'portal_upload_path', 'skynet/skyfile')
+        portal_file_fieldname = getattr(opts, 'portal_file_fieldname', 'file')
+        portal_directory_file_fieldname = \
+            getattr(opts, 'portal_directory_file_fieldname', 'files[]')
+        custom_filename = getattr(opts, 'custom_filename', '')
+        timeout_seconds = getattr(opts, 'timeout_seconds', None)
+
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
-            'portal_upload_path': 'skynet/skyfile',
-            'portal_file_fieldname': 'file',
-            'portal_directory_file_fieldname': 'files[]',
-            'custom_filename': ''
+            'portal_url': portal_url,
+            'portal_upload_path': portal_upload_path,
+            'portal_file_fieldname': portal_file_fieldname,
+            'portal_directory_file_fieldname': portal_directory_file_fieldname,
+            'custom_filename': custom_filename,
+            'timeout_seconds': timeout_seconds
         })
 
     @staticmethod
     def default_download_options():
         """Returns the default download options."""
+        return Skynet.__fill_with_default_download_options()
+
+    @staticmethod
+    def __fill_with_default_download_options(opts=None):
+        """Fills in missing options with the default download options."""
+        portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
+        timeout_seconds = getattr(opts, 'timeout_seconds', None)
+
         return type('obj', (object,), {
-            'portal_url': 'https://siasky.net',
+            'portal_url': portal_url,
+            'timeout_seconds': timeout_seconds
         })
 
     @staticmethod
@@ -49,29 +73,35 @@ class Skynet:
     @staticmethod
     def upload_file_request(path, opts=None):
         """Posts request to upload file."""
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         with open(path, 'rb') as fd:
             host = opts.portal_url
             path = opts.portal_upload_path
             url = host+'/'+path
-            r = requests.post(url, files={opts.portal_file_fieldname: fd})
-        return r
+
+            try:
+                return requests.post(url,
+                                     files={opts.portal_file_fieldname: fd},
+                                     timeout=opts.timeout_seconds)
+            except requests.exceptions.Timeout:
+                raise TimeoutError('Request timed out')
 
     @staticmethod
     def upload_file_request_with_chunks(path, opts=None):
         """Posts request to upload file with chunks."""
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         filename = opts.custom_filename if opts.custom_filename else path
-
         url = "%s/%s?filename=%s" % \
             (opts.portal_url, opts.portal_upload_path, filename)
         headers = {'Content-Type': 'application/octet-stream'}
-        r = requests.post(url, data=path, headers=headers)
-        return r
+
+        try:
+            return requests.post(url, data=path, headers=headers,
+                                 timeout=opts.timeout_seconds)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def upload_directory(path, opts=None):
@@ -88,8 +118,7 @@ class Skynet:
             print("Given path is not a directory")
             return None
 
-        if opts is None:
-            opts = Skynet.default_upload_options()
+        opts = Skynet.__fill_with_default_upload_options(opts)
 
         ftuples = []
         files = list(Skynet.__walk_directory(path).keys())
@@ -102,8 +131,11 @@ class Skynet:
         host = opts.portal_url
         path = opts.portal_upload_path
         url = "%s/%s?filename=%s" % (host, path, filename)
-        r = requests.post(url, files=ftuples)
-        return r
+        try:
+            return requests.post(url, files=ftuples,
+                                 timeout=opts.timeout_seconds)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def download_file(path, skylink, opts=None):
@@ -115,14 +147,17 @@ class Skynet:
     @staticmethod
     def download_file_request(skylink, opts=None, stream=False):
         """Posts request to download file."""
-        if opts is None:
-            opts = Skynet.default_download_options()
+        opts = Skynet.__fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
         url = portal+'/'+skylink
-        r = requests.get(url, allow_redirects=True, stream=stream)
-        return r
+
+        try:
+            return requests.get(url, allow_redirects=True, stream=stream,
+                                timeout=opts.timeout_seconds)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def metadata(skylink, opts=None):
@@ -133,14 +168,17 @@ class Skynet:
     @staticmethod
     def metadata_request(skylink, opts=None, stream=False):
         """Posts request to get metadata from given skylink."""
-        if opts is None:
-            opts = Skynet.default_download_options()
+        opts = Skynet.__fill_with_default_download_options(opts)
 
         portal = opts.portal_url
         skylink = Skynet.__strip_prefix(skylink)
         url = portal+'/'+skylink
-        r = requests.head(url, allow_redirects=True, stream=stream)
-        return r
+
+        try:
+            return requests.head(url, allow_redirects=True, stream=stream,
+                                 timeout=opts.timeout_seconds)
+        except requests.exceptions.Timeout:
+            raise TimeoutError('Request timed out')
 
     @staticmethod
     def __walk_directory(path):
