@@ -2,14 +2,14 @@
 
 import filecmp
 import sys
+import tempfile
 
 import responses
 
 from siaskynet import Skynet
 
 SRC_FILE = "./testdata/file1"
-DST_FILE = "./dst.txt"
-SRC_DIR = "./siaskynet"
+SRC_DIR = "./testdata"
 
 
 @responses.activate
@@ -37,11 +37,12 @@ def test_upload_and_download_file():
         status=200
     )
 
-    print("Downloading to "+DST_FILE)
+    dst_file = tempfile.NamedTemporaryFile().name
+    print("Downloading to "+dst_file)
     skylink = skylink[len(Skynet.uri_skynet_prefix()):]
-    Skynet.download_file(DST_FILE, skylink)
-    if not filecmp.cmp(SRC_FILE, DST_FILE):
-        sys.exit("ERROR: Downloaded file at "+DST_FILE +
+    Skynet.download_file(dst_file, skylink)
+    if not filecmp.cmp(SRC_FILE, dst_file):
+        sys.exit("ERROR: Downloaded file at "+dst_file +
                  " did not equal uploaded file "+SRC_FILE)
 
     print("File download successful")
