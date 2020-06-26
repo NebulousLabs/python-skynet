@@ -8,14 +8,15 @@ import responses
 
 from siaskynet import Skynet
 
-SRC_FILE = "./testdata/file1"
-SRC_DIR = "./testdata"
-
 
 @responses.activate
 def test_upload_and_download_file():
     """Test uploading and download a file."""
+    src_file = "./testdata/file1"
+
     # upload a file
+
+    skylink = Skynet.uri_skynet_prefix() + 'testskylink'
 
     responses.add(
         responses.POST,
@@ -24,9 +25,12 @@ def test_upload_and_download_file():
         status=200
     )
 
-    print("Uploading file "+SRC_FILE)
-    skylink = Skynet.upload_file(SRC_FILE)
-    print("File upload successful, skylink: " + skylink)
+    print("Uploading file "+src_file)
+    skylink2 = Skynet.upload_file(src_file)
+    if skylink != skylink2:
+        sys.exit("ERROR: expected returned skylink "+skylink +
+                 ", received "+skylink2)
+    print("File upload successful, skylink: " + skylink2)
 
     # download a file
 
@@ -41,9 +45,9 @@ def test_upload_and_download_file():
     print("Downloading to "+dst_file)
     skylink = skylink[len(Skynet.uri_skynet_prefix()):]
     Skynet.download_file(dst_file, skylink)
-    if not filecmp.cmp(SRC_FILE, dst_file):
+    if not filecmp.cmp(src_file, dst_file):
         sys.exit("ERROR: Downloaded file at "+dst_file +
-                 " did not equal uploaded file "+SRC_FILE)
+                 " did not equal uploaded file "+src_file)
 
     print("File download successful")
 
@@ -51,7 +55,11 @@ def test_upload_and_download_file():
 @responses.activate
 def test_upload_directory():
     """Test uploading a directory."""
+    src_dir = "./testdata"
+
     # upload a directory
+
+    skylink = Skynet.uri_skynet_prefix() + 'testskylink'
 
     responses.add(
         responses.POST,
@@ -60,6 +68,9 @@ def test_upload_directory():
         status=200
     )
 
-    print("Uploading dir "+SRC_DIR)
-    skylink = Skynet.upload_directory(SRC_DIR)
+    print("Uploading dir "+src_dir)
+    skylink2 = Skynet.upload_directory(src_dir)
+    if skylink != skylink2:
+        sys.exit("ERROR: expected returned skylink "+skylink +
+                 ", received "+skylink2)
     print("Dir upload successful, skylink: " + skylink)
