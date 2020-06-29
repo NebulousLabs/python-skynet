@@ -18,18 +18,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pylint pytest requests
-    - name: Compile
-      run: |
-        python -m py_compile siaskynet/*.py
+      run: make install
+    - name: Build
+      run: pipenv run build
     - name: Lint
       if: matrix.python-version >= 3.0
-      run: |
-        flake8 siaskynet/ --count --show-source --statistics --per-file-ignores="__init__.py:F401"
-        # Disable lint that complains about short names.
-        pylint siaskynet/ -d invalid-name,protected-access
+      run: pipenv run lint
     - name: Test
-      run: |
-        pytest
+      run: pipenv run test
