@@ -73,6 +73,8 @@ class Skynet:
     @staticmethod
     def upload_file_request(path, opts=None):
         """Posts request to upload file."""
+
+        path = os.path.normpath(path)
         opts = Skynet.__fill_with_default_upload_options(opts)
 
         with open(path, 'rb') as fd:
@@ -93,6 +95,8 @@ class Skynet:
     @staticmethod
     def upload_file_request_with_chunks(path, opts=None):
         """Posts request to upload file with chunks."""
+
+        path = os.path.normpath(path)
         opts = Skynet.__fill_with_default_upload_options(opts)
 
         filename = opts.custom_filename if opts.custom_filename else path
@@ -109,6 +113,7 @@ class Skynet:
     @staticmethod
     def upload_directory(path, opts=None):
         """Uploads directory at path with the given options."""
+
         r = Skynet.upload_directory_request(path, opts)
         sia_url = Skynet.uri_skynet_prefix() + r.json()["skylink"]
         r.close()
@@ -117,6 +122,9 @@ class Skynet:
     @staticmethod
     def upload_directory_request(path, opts=None):
         """Posts request to upload directory."""
+
+        path = os.path.normpath(path)
+
         if not os.path.isdir(path):
             print("Given path is not a directory")
             return None
@@ -126,9 +134,10 @@ class Skynet:
         ftuples = []
         files = list(Skynet.__walk_directory(path).keys())
         for filepath in files:
-            assert filepath.startswith(path)
+            basepath = path if path == '/' else path + '/'
+            assert filepath.startswith(basepath)
             ftuples.append((opts.portal_directory_file_fieldname,
-                            (filepath[len(path):], open(filepath, 'rb'))))
+                            (filepath[len(basepath):], open(filepath, 'rb'))))
 
         filename = opts.custom_filename if opts.custom_filename else path
 
@@ -144,6 +153,8 @@ class Skynet:
     @staticmethod
     def download_file(path, skylink, opts=None):
         """Downloads file to path from given skylink with the given options."""
+
+        path = os.path.normpath(path)
         r = Skynet.download_file_request(skylink, opts)
         open(path, 'wb').write(r.content)
         r.close()
@@ -151,6 +162,7 @@ class Skynet:
     @staticmethod
     def download_file_request(skylink, opts=None, stream=False):
         """Posts request to download file."""
+
         opts = Skynet.__fill_with_default_download_options(opts)
 
         portal = opts.portal_url
@@ -187,6 +199,9 @@ class Skynet:
     @staticmethod
     def __walk_directory(path):
         """Walks given directory returning all files recursively."""
+
+        path = os.path.normpath(path)
+
         files = {}
         for root, subdirs, subfiles in os.walk(path):
             for subdir in subdirs:
