@@ -132,9 +132,9 @@ class Skynet:
         opts = Skynet.__fill_with_default_upload_options(opts)
 
         ftuples = []
+        basepath = path if path == '/' else path + '/'
         files = list(Skynet.__walk_directory(path).keys())
         for filepath in files:
-            basepath = path if path == '/' else path + '/'
             assert filepath.startswith(basepath)
             ftuples.append((opts.portal_directory_file_fieldname,
                             (filepath[len(basepath):], open(filepath, 'rb'))))

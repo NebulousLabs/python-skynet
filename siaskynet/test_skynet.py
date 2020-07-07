@@ -14,7 +14,6 @@ def test_walk_directory():
     assert os.path.normpath(path) == "testdata"
 
     files = skynet.Skynet._Skynet__walk_directory(path)
-    print(files)
     expected_files = ["testdata/file1",
                       "testdata/dir1/file2",
                       "testdata/file3"]
