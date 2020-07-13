@@ -11,9 +11,70 @@ class Skynet:
     """Contains static methods making up the Skynet API."""
 
     @staticmethod
+    def default_portal_url():
+        """Returns the default portal URL."""
+        return 'https://siasky.net'
+
+    @staticmethod
     def uri_skynet_prefix():
         """Returns the Skynet URI prefix."""
         return "sia://"
+
+    @staticmethod
+    def default_add_skykey_options():
+        """Returns the default addskykey options."""
+        return Skynet.__fill_with_default_add_skykey_options()
+
+    @staticmethod
+    def __fill_with_default_add_skykey_options(opts=None):
+        """Fills in missing options with the default addskykey options."""
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
+
+        return type('obj', (object,), {
+            'portal_url': portal_url,
+        })
+
+    @staticmethod
+    def default_create_skykey_options():
+        """Returns the default createskykey options."""
+        return Skynet.__fill_with_default_create_skykey_options()
+
+    @staticmethod
+    def __fill_with_default_create_skykey_options(opts=None):
+        """Fills in missing options with the default createskykey options."""
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
+
+        return type('obj', (object,), {
+            'portal_url': portal_url,
+        })
+
+    @staticmethod
+    def default_get_skykey_options():
+        """Returns the default getskykey options."""
+        return Skynet.__fill_with_default_get_skykey_options()
+
+    @staticmethod
+    def __fill_with_default_get_skykey_options(opts=None):
+        """Fills in missing options with the default getskykey options."""
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
+
+        return type('obj', (object,), {
+            'portal_url': portal_url,
+        })
+
+    @staticmethod
+    def default_list_skykeys_options():
+        """Returns the default listskykeys options."""
+        return Skynet.__fill_with_default_list_skykeys_options()
+
+    @staticmethod
+    def __fill_with_default_list_skykeys_options(opts=None):
+        """Fills in missing options with the default listskykeys options."""
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
+
+        return type('obj', (object,), {
+            'portal_url': portal_url,
+        })
 
     @staticmethod
     def default_upload_options():
@@ -23,7 +84,7 @@ class Skynet:
     @staticmethod
     def __fill_with_default_upload_options(opts=None):
         """Fills in missing options with the default upload options."""
-        portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
         portal_upload_path = \
             getattr(opts, 'portal_upload_path', 'skynet/skyfile')
         portal_file_fieldname = getattr(opts, 'portal_file_fieldname', 'file')
@@ -49,7 +110,7 @@ class Skynet:
     @staticmethod
     def __fill_with_default_download_options(opts=None):
         """Fills in missing options with the default download options."""
-        portal_url = getattr(opts, 'portal_url', 'https://siasky.net')
+        portal_url = getattr(opts, 'portal_url', Skynet.default_portal_url())
         timeout_seconds = getattr(opts, 'timeout_seconds', None)
 
         return type('obj', (object,), {
@@ -63,6 +124,31 @@ class Skynet:
         if string.startswith(Skynet.uri_skynet_prefix()):
             return string[len(Skynet.uri_skynet_prefix()):]
         return string
+
+    @staticmethod
+    def add_skykey(skykey, opts=None):
+        """Stores the given base-64 encoded skykey with the skykey manager."""
+        raise NotImplementedError
+
+    @staticmethod
+    def create_skykey(skykey_name, skykey_type, opts=None):
+        """Returns a new skykey created and stored under the given name with \
+        the given type. skykeyType can be either "public-id" or \
+        "private-id"."""
+        raise NotImplementedError
+
+    @staticmethod
+    def get_skykey(skykey_name, skykey_id, opts=None):
+        """returns the given skykey. One of either name or id must be provided \
+        -- the one that is not provided should be left blank."""
+        raise NotImplementedError
+
+    @staticmethod
+    def list_skykeys(opts=None):
+        """Returns a list of all skykeys."""
+        raise NotImplementedError
+
+
 
     @staticmethod
     def upload_file(path, opts=None):
