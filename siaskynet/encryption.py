@@ -75,9 +75,14 @@ def create_skykey(skykey_name, skykey_type, opts=None):
     raise NotImplementedError
 
 
-def get_skykey(skykey_name, skykey_id, opts=None):
-    """Returns the given skykey. One of either name or id must be provided \
-       -- the one that is not provided should be left blank."""
+def get_skykey_by_name(skykey_name, opts=None):
+    """Returns the given skykey by name."""
+
+    raise NotImplementedError
+
+
+def get_skykey_by_id(skykey_id, opts=None):
+    """Returns the given skykey by id."""
 
     raise NotImplementedError
 

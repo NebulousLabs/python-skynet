@@ -12,7 +12,8 @@ from .download import (
 from .encryption import (
     default_add_skykey_options, default_create_skykey_options,
     default_get_skykey_options, default_list_skykeys_options,
-    add_skykey, create_skykey, get_skykey, list_skykeys
+    add_skykey, create_skykey, get_skykey_by_id, get_skykey_by_name,
+    list_skykeys
 )
 from .portals import (
     default_get_portals_options, default_update_portals_options,
