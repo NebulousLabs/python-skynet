@@ -47,13 +47,13 @@ def __fill_with_default_get_skykey_options(opts=None):
     })
 
 
-def default_list_skykeys_options():
-    """Returns the default listskykeys options."""
-    return __fill_with_default_list_skykeys_options()
+def default_get_skykeys_options():
+    """Returns the default getskykeys options."""
+    return __fill_with_default_get_skykeys_options()
 
 
-def __fill_with_default_list_skykeys_options(opts=None):
-    """Fills in missing options with the default listskykeys options."""
+def __fill_with_default_get_skykeys_options(opts=None):
+    """Fills in missing options with the default getskykeys options."""
     portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
 
     return type('obj', (object,), {
@@ -87,7 +87,7 @@ def get_skykey_by_id(skykey_id, opts=None):
     raise NotImplementedError
 
 
-def list_skykeys(opts=None):
-    """Returns a list of all skykeys."""
+def get_skykeys(opts=None):
+    """Returns a get of all skykeys."""
 
     raise NotImplementedError
