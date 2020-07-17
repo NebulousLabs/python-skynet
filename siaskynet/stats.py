@@ -1,16 +1,16 @@
-"""Skynet statistics API.
+"""Skynet stats API.
 """
 
 
 from . import utils
 
 
-def default_get_statistics_options():
+def default_get_stats_options():
     """Returns the default stats options."""
-    return __fill_with_default_get_statistics_options()
+    return __fill_with_default_get_stats_options()
 
 
-def __fill_with_default_get_statistics_options(opts=None):
+def __fill_with_default_get_stats_options(opts=None):
     """Fills in missing options with the default stats options."""
     portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
 
@@ -19,7 +19,7 @@ def __fill_with_default_get_statistics_options(opts=None):
     })
 
 
-def get_statistics(opts=None):
+def get_stats(opts=None):
     """Returns statistical information about Skynet, e.g. number of files \
     uploaded."""
 

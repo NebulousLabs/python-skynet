@@ -19,7 +19,7 @@ from .portals import (
     default_get_portals_options, default_update_portals_options,
     get_portals, update_portals
 )
-from .statistics import default_get_statistics_options, get_statistics
+from .stats import default_get_stats_options, get_stats
 from .upload import (
     default_upload_options, upload_file, upload_file_request,
     upload_file_request_with_chunks, upload_directory, upload_directory_request
