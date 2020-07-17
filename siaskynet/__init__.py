@@ -1,9 +1,9 @@
 """An SDK for integrating Skynet into Python applications.
 """
 
-from .blacklist import (
-    default_get_blacklist_options, default_update_blacklist_options,
-    get_blacklist, update_blacklist
+from .blocklist import (
+    default_get_blocklist_options, default_update_blocklist_options,
+    get_blocklist, update_blocklist
 )
 from .download import (
     default_download_options, download_file, download_file_request,
