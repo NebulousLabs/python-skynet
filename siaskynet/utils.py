@@ -2,7 +2,11 @@
 """
 
 import os
-from urllib.parse import urljoin
+
+try:
+    from urllib import urljoin
+except ImportError:  # For Python 3
+    from urllib.parse import urljoin
 
 
 def default_portal_url():
@@ -28,11 +32,14 @@ def __default_options(endpoint_path):
     }
 
 
-def __make_url(obj):
-    """Makes a URL from the given object containing 'portal_url' and \
-    'endpoint_path'."""
+def __make_url(portal_url, *arg):
+    """Makes a URL from the given portal url and path elements."""
 
-    return urljoin(obj['portal_url'], obj['endpoint_path'])
+    url = portal_url
+    for path_element in arg:
+        url = urljoin(portal_url, path_element)
+
+    return url
 
 
 def __strip_prefix(string):

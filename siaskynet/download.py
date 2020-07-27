@@ -3,7 +3,6 @@
 
 import json
 import os
-from urllib.parse import urljoin
 
 import requests
 
@@ -35,8 +34,7 @@ def download_file_request(skylink, custom_opts={}, stream=False):
     opts.update(custom_opts)
 
     skylink = utils.__strip_prefix(skylink)
-    url = utils.__make_url(opts)
-    url = urljoin(url, skylink)
+    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'], skylink)
 
     try:
         return requests.get(url, allow_redirects=True, stream=stream,
@@ -59,8 +57,7 @@ def metadata_request(skylink, custom_opts={}, stream=False):
     opts.update(custom_opts)
 
     skylink = utils.__strip_prefix(skylink)
-    url = utils.__make_url(opts)
-    url = urljoin(url, skylink)
+    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'], skylink)
 
     try:
         return requests.head(url, allow_redirects=True, stream=stream,

@@ -39,7 +39,7 @@ def upload_file_request(path, custom_opts={}):
         return None
 
     with open(path, 'rb') as fd:
-        url = utils.__make_url(opts)
+        url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
         filename = opts['custom_filename'] if opts['custom_filename'] \
             else os.path.basename(fd.name)
         files = {opts['portal_file_fieldname']: (filename, fd)}
@@ -61,12 +61,12 @@ def upload_file_request_with_chunks(path, custom_opts={}):
     path = os.path.normpath(path)
 
     filename = opts['custom_filename'] if opts['custom_filename'] else path
-    url = utils.__make_url(opts)
-    url = "%s?filename=%s" % (url, filename)
+    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
+    params = {filename: filename}
     headers = {'Content-Type': 'application/octet-stream'}
 
     try:
-        return requests.post(url, data=path, headers=headers,
+        return requests.post(url, data=path, headers=headers, params=params,
                              timeout=opts['timeout_seconds'])
     except requests.exceptions.Timeout:
         raise TimeoutError('Request timed out')
@@ -102,10 +102,10 @@ def upload_directory_request(path, custom_opts={}):
 
     filename = opts['custom_filename'] if opts['custom_filename'] else path
 
-    url = utils.__make_url(opts)
-    url = "%s?filename=%s" % (url, filename)
+    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
+    params = {filename: filename}
     try:
-        return requests.post(url, files=ftuples,
+        return requests.post(url, files=ftuples, params=params,
                              timeout=opts['timeout_seconds'])
     except requests.exceptions.Timeout:
         raise TimeoutError('Request timed out')

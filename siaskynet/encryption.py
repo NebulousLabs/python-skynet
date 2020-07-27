@@ -5,69 +5,45 @@
 from . import utils
 
 
-def default_add_skykey_options():
+def __default_add_skykey_options():
     """Returns the default addskykey options."""
-    return __fill_with_default_add_skykey_options()
+
+    obj = utils.__default_options("/skynet/addskykey")
+
+    return obj
 
 
-def __fill_with_default_add_skykey_options(opts=None):
-    """Fills in missing options with the default addskykey options."""
-    portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
-
-    return type('obj', (object,), {
-        'portal_url': portal_url,
-    })
-
-
-def default_create_skykey_options():
+def __default_create_skykey_options():
     """Returns the default createskykey options."""
-    return __fill_with_default_create_skykey_options()
+
+    obj = utils.__default_options("/skynet/createskykey")
+
+    return obj
 
 
-def __fill_with_default_create_skykey_options(opts=None):
-    """Fills in missing options with the default createskykey options."""
-    portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
-
-    return type('obj', (object,), {
-        'portal_url': portal_url,
-    })
-
-
-def default_get_skykey_options():
+def __default_get_skykey_options():
     """Returns the default getskykey options."""
-    return __fill_with_default_get_skykey_options()
+
+    obj = utils.__default_options("/skynet/skykey")
+
+    return obj
 
 
-def __fill_with_default_get_skykey_options(opts=None):
-    """Fills in missing options with the default getskykey options."""
-    portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
-
-    return type('obj', (object,), {
-        'portal_url': portal_url,
-    })
-
-
-def default_get_skykeys_options():
+def __default_get_skykeys_options():
     """Returns the default getskykeys options."""
-    return __fill_with_default_get_skykeys_options()
+
+    obj = utils.__default_options("/skynet/skykeys")
+
+    return obj
 
 
-def __fill_with_default_get_skykeys_options(opts=None):
-    """Fills in missing options with the default getskykeys options."""
-    portal_url = getattr(opts, 'portal_url', utils.default_portal_url())
-
-    return type('obj', (object,), {
-        'portal_url': portal_url,
-    })
-
-
-def add_skykey(skykey, opts=None):
+def add_skykey(skykey, custom_opts={}):
     """Stores the given base-64 encoded skykey with the skykey manager."""
 
     raise NotImplementedError
 
 
-def create_skykey(skykey_name, skykey_type, opts=None):
+def create_skykey(skykey_name, skykey_type, custom_opts={}):
     """Returns a new skykey created and stored under the given name with \
        the given type. skykeyType can be either "public-id" or \
        "private-id"."""
@@ -75,19 +51,19 @@ def create_skykey(skykey_name, skykey_type, opts=None):
     raise NotImplementedError
 
 
-def get_skykey_by_name(skykey_name, opts=None):
+def get_skykey_by_name(skykey_name, custom_opts={}):
     """Returns the given skykey by name."""
 
     raise NotImplementedError
 
 
-def get_skykey_by_id(skykey_id, opts=None):
+def get_skykey_by_id(skykey_id, custom_opts={}):
     """Returns the given skykey by id."""
 
     raise NotImplementedError
 
 
-def get_skykeys(opts=None):
+def get_skykeys(custom_opts={}):
     """Returns a get of all skykeys."""
 
     raise NotImplementedError
