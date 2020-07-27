@@ -22,14 +22,14 @@ def __default_update_portals_options():
 
 
 def get_portals(custom_opts={}):
-    """Returns the list of hashed merkleroots that are portalsed."""
+    """Returns the list of known Skynet portals."""
 
     raise NotImplementedError
 
 
 def update_portals(additions, removals, custom_opts={}):
-    """Updates the list of skylinks that should be portalsed from Skynet. \
-    This endpoint can be used to both add and remove skylinks from the \
-    portals."""
+    """Updates the list of known portals. This function can be used to both \
+    add and remove portals from the list. Removals are provided in the form \
+    of addresses."""
 
     raise NotImplementedError
