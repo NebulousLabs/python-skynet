@@ -50,8 +50,6 @@ def test_upload_file_custom_filename():
     sialink = skynet.uri_skynet_prefix() + skylink
 
     custom_name = 'testname'
-    opts = skynet.default_upload_options()
-    opts.custom_filename = custom_name
 
     # upload a file with custom filename
 
@@ -63,7 +61,7 @@ def test_upload_file_custom_filename():
     )
 
     print("Uploading file "+src_file)
-    sialink2 = skynet.upload_file(src_file, opts)
+    sialink2 = skynet.upload_file(src_file, {'custom_filename': custom_name})
     if sialink != sialink2:
         sys.exit("ERROR: expected returned sialink "+sialink +
                  ", received "+sialink2)
