@@ -2,7 +2,7 @@
 
 import os
 
-from . import skynet
+from . import utils
 
 
 def test_walk_directory():
@@ -13,7 +13,7 @@ def test_walk_directory():
     # Quick test that normalizing removes the final slash.
     assert os.path.normpath(path) == "testdata"
 
-    files = skynet.Skynet._Skynet__walk_directory(path)
+    files = utils.__walk_directory(path)
     expected_files = ["testdata/file1",
                       "testdata/dir1/file2",
                       "testdata/file3"]
