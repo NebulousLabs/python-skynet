@@ -4,8 +4,6 @@
 import json
 import os
 
-import requests
-
 from . import utils
 
 
@@ -36,11 +34,14 @@ def download_file_request(skylink, custom_opts={}, stream=False):
     skylink = utils.__strip_prefix(skylink)
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'], skylink)
 
-    try:
-        return requests.get(url, allow_redirects=True, stream=stream,
-                            timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+    return utils.__execute_request(
+        "GET",
+        url,
+        opts,
+        allow_redirects=True,
+        stream=stream,
+        timeout=opts['timeout_seconds']
+    )
 
 
 def metadata(skylink, opts=None):
@@ -59,8 +60,11 @@ def metadata_request(skylink, custom_opts={}, stream=False):
     skylink = utils.__strip_prefix(skylink)
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'], skylink)
 
-    try:
-        return requests.head(url, allow_redirects=True, stream=stream,
-                             timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+    return utils.__execute_request(
+        "HEAD",
+        url,
+        opts,
+        allow_redirects=True,
+        stream=stream,
+        timeout=opts['timeout_seconds']
+    )

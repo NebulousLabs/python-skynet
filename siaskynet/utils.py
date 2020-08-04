@@ -3,10 +3,9 @@
 
 import os
 
-try:
-    from urllib import urljoin
-except ImportError:  # For Python 3
-    from urllib.parse import urljoin
+from urllib.parse import urljoin
+
+import requests
 
 
 def default_portal_url():
@@ -27,9 +26,27 @@ def __default_options(endpoint_path):
     return {
         'portal_url': default_portal_url(),
         'endpoint_path': endpoint_path,
-        # 'custom_user_agent':
-        # 'api_key':
+
+        'api_key': "",
+        'custom_user_agent': "",
     }
+
+
+def __execute_request(method, url, opts, **kwargs):
+    """Makes and executes a request with the given options."""
+
+    if opts["api_key"] != "":
+        kwargs["auth"] = ("", opts["api_key"])
+
+    if opts["custom_user_agent"] != "":
+        headers = kwargs.get("headers", {})
+        headers["User-Agent"] = opts["custom_user_agent"]
+        kwargs["headers"] = headers
+
+    try:
+        return requests.request(method, url, **kwargs)
+    except requests.exceptions.Timeout:
+        raise TimeoutError("Request timed out")
 
 
 def __make_url(portal_url, *arg):

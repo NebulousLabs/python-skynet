@@ -3,8 +3,6 @@
 
 import os
 
-import requests
-
 from . import utils
 
 
@@ -44,12 +42,13 @@ def upload_file_request(path, custom_opts={}):
             else os.path.basename(fd.name)
         files = {opts['portal_file_fieldname']: (filename, fd)}
 
-        try:
-            return requests.post(url,
-                                 files=files,
-                                 timeout=opts['timeout_seconds'])
-        except requests.exceptions.Timeout:
-            raise TimeoutError('Request timed out')
+        return utils.__execute_request(
+            "POST",
+            url,
+            opts,
+            files=files,
+            timeout=opts['timeout_seconds']
+        )
 
 
 def upload_file_request_with_chunks(path, custom_opts={}):
@@ -59,17 +58,24 @@ def upload_file_request_with_chunks(path, custom_opts={}):
     opts.update(custom_opts)
 
     path = os.path.normpath(path)
+    if not os.path.isfile(path):
+        print("Given path is not a file")
+        return None
 
-    filename = opts['custom_filename'] if opts['custom_filename'] else path
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
+    filename = opts['custom_filename'] if opts['custom_filename'] else path
     params = {filename: filename}
     headers = {'Content-Type': 'application/octet-stream'}
 
-    try:
-        return requests.post(url, data=path, headers=headers, params=params,
-                             timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+    return utils.__execute_request(
+        "POST",
+        url,
+        opts,
+        data=path,
+        headers=headers,
+        params=params,
+        timeout=opts['timeout_seconds']
+    )
 
 
 def upload_directory(path, custom_opts={}):
@@ -104,8 +110,12 @@ def upload_directory_request(path, custom_opts={}):
 
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
     params = {filename: filename}
-    try:
-        return requests.post(url, files=ftuples, params=params,
-                             timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+
+    return utils.__execute_request(
+        "POST",
+        url,
+        opts,
+        files=ftuples,
+        params=params,
+        timeout=opts['timeout_seconds']
+    )
