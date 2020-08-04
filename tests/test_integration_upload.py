@@ -7,8 +7,8 @@ import responses
 import siaskynet as skynet
 
 
-skylink = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
-sialink = skynet.uri_skynet_prefix() + skylink
+SKYLINK = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+SIALINK = skynet.uri_skynet_prefix() + SKYLINK
 
 
 @responses.activate
@@ -22,14 +22,14 @@ def test_upload_file():
     responses.add(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': skylink},
+        json={'skylink': SKYLINK},
         status=200
     )
 
     print("Uploading file "+src_file)
     sialink2 = skynet.upload_file(src_file)
-    if sialink != sialink2:
-        sys.exit("ERROR: expected returned sialink "+sialink +
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
     print("File upload successful, sialink: " + sialink2)
 
@@ -61,14 +61,14 @@ def test_upload_file_custom_filename():
     responses.add(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': skylink},
+        json={'skylink': SKYLINK},
         status=200
     )
 
     print("Uploading file "+src_file)
     sialink2 = skynet.upload_file(src_file, {'custom_filename': custom_name})
-    if sialink != sialink2:
-        sys.exit("ERROR: expected returned sialink "+sialink +
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
     print("File upload successful, sialink: " + sialink2)
 
@@ -93,14 +93,14 @@ def test_upload_file_api_key():
     responses.add(
         responses.POST,
         "https://siasky.net/skynet/skyfile",
-        json={"skylink": skylink},
+        json={"skylink": SKYLINK},
         status=200,
     )
 
     print("Uploading file "+src_file)
     sialink2 = skynet.upload_file(src_file, {"api_key": "foobar"})
-    if sialink != sialink2:
-        sys.exit("ERROR: expected returned sialink "+sialink +
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
     print("File upload successful, sialink: " + sialink2)
 
@@ -121,14 +121,14 @@ def test_upload_file_custom_user_agent():
     responses.add(
         responses.POST,
         "https://siasky.net/skynet/skyfile",
-        json={"skylink": skylink},
+        json={"skylink": SKYLINK},
         status=200,
     )
 
     print("Uploading file "+src_file)
     sialink2 = skynet.upload_file(src_file, {"custom_user_agent": "Sia-Agent"})
-    if sialink != sialink2:
-        sys.exit("ERROR: expected returned sialink "+sialink +
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
     print("File upload successful, sialink: " + sialink2)
 
@@ -150,16 +150,16 @@ def test_upload_directory():
     responses.add(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': skylink},
+        json={'skylink': SKYLINK},
         status=200
     )
 
     print('Uploading dir '+src_dir)
     sialink2 = skynet.upload_directory(src_dir)
-    if sialink != sialink2:
-        sys.exit('ERROR: expected returned sialink '+sialink +
+    if SIALINK != sialink2:
+        sys.exit('ERROR: expected returned sialink '+SIALINK +
                  ', received '+sialink2)
-    print('Dir upload successful, sialink: ' + sialink)
+    print('Dir upload successful, sialink: ' + sialink2)
 
     headers = responses.calls[0].request.headers
     assert headers["Content-Type"].startswith("multipart/form-data;")

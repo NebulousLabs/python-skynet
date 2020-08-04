@@ -5,6 +5,24 @@ import os
 from . import utils
 
 
+portal_url = utils.default_portal_url()
+skylink = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+
+
+def test_make_url():
+    """Test make_url."""
+
+    assert utils.__make_url(portal_url, "/") == portal_url+"/"
+    assert utils.__make_url(portal_url, "/skynet") == portal_url+"/skynet"
+    assert utils.__make_url(portal_url, "/skynet/") == portal_url+"/skynet/"
+
+    assert utils.__make_url(portal_url, "/", skylink) == portal_url+"/"+skylink
+    assert utils.__make_url(portal_url, "/skynet", skylink) == \
+        portal_url+"/skynet/"+skylink
+    assert utils.__make_url(portal_url, "//skynet/", skylink) == \
+        portal_url+"/skynet/"+skylink
+
+
 def test_walk_directory():
     """Test walk_directory."""
 

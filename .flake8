@@ -1,0 +1,5 @@
+[flake8]
+count = True
+show-source = True
+statistics = True
+per-file-ignores = __init__.py:F401
