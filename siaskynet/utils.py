@@ -27,21 +27,25 @@ def __default_options(endpoint_path):
         'portal_url': default_portal_url(),
         'endpoint_path': endpoint_path,
 
-        'api_key': "",
-        'custom_user_agent': "",
+        'api_key': None,
+        'custom_user_agent': None,
+        "timeout_seconds": None,
     }
 
 
 def __execute_request(method, url, opts, **kwargs):
     """Makes and executes a request with the given options."""
 
-    if opts["api_key"] != "":
+    if opts["api_key"] is not None:
         kwargs["auth"] = ("", opts["api_key"])
 
-    if opts["custom_user_agent"] != "":
+    if opts["custom_user_agent"] is not None:
         headers = kwargs.get("headers", {})
         headers["User-Agent"] = opts["custom_user_agent"]
         kwargs["headers"] = headers
+
+    if opts["timeout_seconds"] is not None:
+        kwargs["timeout"] = opts["timeout_seconds"]
 
     try:
         return requests.request(method, url, **kwargs)

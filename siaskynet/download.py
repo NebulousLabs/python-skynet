@@ -11,7 +11,6 @@ def __default_download_options():
     """Returns the default download options."""
 
     obj = utils.__default_options("/")
-    obj['timeout_seconds'] = None
 
     return obj
 
@@ -40,7 +39,6 @@ def download_file_request(skylink, custom_opts={}, stream=False):
         opts,
         allow_redirects=True,
         stream=stream,
-        timeout=opts['timeout_seconds']
     )
 
 
@@ -66,5 +64,4 @@ def metadata_request(skylink, custom_opts={}, stream=False):
         opts,
         allow_redirects=True,
         stream=stream,
-        timeout=opts['timeout_seconds']
     )

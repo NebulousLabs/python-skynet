@@ -13,7 +13,6 @@ def __default_upload_options():
     obj['portal_file_fieldname'] = 'file'
     obj['portal_directory_file_fieldname'] = 'files[]'
     obj['custom_filename'] = ''
-    obj['timeout_seconds'] = None
 
     return obj
 
@@ -47,7 +46,6 @@ def upload_file_request(path, custom_opts={}):
             url,
             opts,
             files=files,
-            timeout=opts['timeout_seconds']
         )
 
 
@@ -74,7 +72,6 @@ def upload_file_request_with_chunks(path, custom_opts={}):
         data=path,
         headers=headers,
         params=params,
-        timeout=opts['timeout_seconds']
     )
 
 
@@ -117,5 +114,4 @@ def upload_directory_request(path, custom_opts={}):
         opts,
         files=ftuples,
         params=params,
-        timeout=opts['timeout_seconds']
     )
