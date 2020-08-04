@@ -58,7 +58,11 @@ def __make_url(portal_url, *arg):
 
     url = portal_url
     for path_element in arg:
-        url = urljoin(portal_url, path_element)
+        while url.endswith("/"):
+            url = url[:-1]
+        while path_element.startswith("/"):
+            path_element = path_element[1:]
+        url = url+"/"+path_element
 
     return url
 
