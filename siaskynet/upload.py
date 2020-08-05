@@ -13,6 +13,7 @@ def __default_upload_options():
     obj['portal_file_fieldname'] = 'file'
     obj['portal_directory_file_fieldname'] = 'files[]'
     obj['custom_filename'] = ''
+    obj['custom_dirname'] = ''
 
     return obj
 
@@ -103,10 +104,10 @@ def upload_directory_request(path, custom_opts={}):
         ftuples.append((opts['portal_directory_file_fieldname'],
                         (filepath[len(basepath):], open(filepath, 'rb'))))
 
-    filename = opts['custom_filename'] if opts['custom_filename'] else path
+    dirname = opts['custom_dirname'] if opts['custom_dirname'] else path
 
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
-    params = {filename: filename}
+    params = {"filename": dirname}
 
     return utils.__execute_request(
         "POST",
