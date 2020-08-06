@@ -9,12 +9,14 @@ import responses
 import siaskynet as skynet
 
 
+skylink = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+
+
 @responses.activate
 def test_download_file():
     """Test downloading a file."""
 
     src_file = "./testdata/file1"
-    skylink = 'testskylink'
 
     # download a file
 

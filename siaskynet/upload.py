@@ -3,8 +3,6 @@
 
 import os
 
-import requests
-
 from . import utils
 
 
@@ -15,7 +13,7 @@ def __default_upload_options():
     obj['portal_file_fieldname'] = 'file'
     obj['portal_directory_file_fieldname'] = 'files[]'
     obj['custom_filename'] = ''
-    obj['timeout_seconds'] = None
+    obj['custom_dirname'] = ''
 
     return obj
 
@@ -44,12 +42,12 @@ def upload_file_request(path, custom_opts={}):
             else os.path.basename(fd.name)
         files = {opts['portal_file_fieldname']: (filename, fd)}
 
-        try:
-            return requests.post(url,
-                                 files=files,
-                                 timeout=opts['timeout_seconds'])
-        except requests.exceptions.Timeout:
-            raise TimeoutError('Request timed out')
+        return utils.__execute_request(
+            "POST",
+            url,
+            opts,
+            files=files,
+        )
 
 
 def upload_file_request_with_chunks(path, custom_opts={}):
@@ -59,17 +57,23 @@ def upload_file_request_with_chunks(path, custom_opts={}):
     opts.update(custom_opts)
 
     path = os.path.normpath(path)
+    if not os.path.isfile(path):
+        print("Given path is not a file")
+        return None
 
-    filename = opts['custom_filename'] if opts['custom_filename'] else path
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
+    filename = opts['custom_filename'] if opts['custom_filename'] else path
     params = {filename: filename}
     headers = {'Content-Type': 'application/octet-stream'}
 
-    try:
-        return requests.post(url, data=path, headers=headers, params=params,
-                             timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+    return utils.__execute_request(
+        "POST",
+        url,
+        opts,
+        data=path,
+        headers=headers,
+        params=params,
+    )
 
 
 def upload_directory(path, custom_opts={}):
@@ -100,12 +104,15 @@ def upload_directory_request(path, custom_opts={}):
         ftuples.append((opts['portal_directory_file_fieldname'],
                         (filepath[len(basepath):], open(filepath, 'rb'))))
 
-    filename = opts['custom_filename'] if opts['custom_filename'] else path
+    dirname = opts['custom_dirname'] if opts['custom_dirname'] else path
 
     url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
-    params = {filename: filename}
-    try:
-        return requests.post(url, files=ftuples, params=params,
-                             timeout=opts['timeout_seconds'])
-    except requests.exceptions.Timeout:
-        raise TimeoutError('Request timed out')
+    params = {"filename": dirname}
+
+    return utils.__execute_request(
+        "POST",
+        url,
+        opts,
+        files=ftuples,
+        params=params,
+    )

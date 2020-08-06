@@ -3,10 +3,7 @@
 
 import os
 
-try:
-    from urllib import urljoin
-except ImportError:  # For Python 3
-    from urllib.parse import urljoin
+import requests
 
 
 def default_portal_url():
@@ -27,9 +24,31 @@ def __default_options(endpoint_path):
     return {
         'portal_url': default_portal_url(),
         'endpoint_path': endpoint_path,
-        # 'custom_user_agent':
-        # 'api_key':
+
+        'api_key': None,
+        'custom_user_agent': None,
+        "timeout_seconds": None,
     }
+
+
+def __execute_request(method, url, opts, **kwargs):
+    """Makes and executes a request with the given options."""
+
+    if opts["api_key"] is not None:
+        kwargs["auth"] = ("", opts["api_key"])
+
+    if opts["custom_user_agent"] is not None:
+        headers = kwargs.get("headers", {})
+        headers["User-Agent"] = opts["custom_user_agent"]
+        kwargs["headers"] = headers
+
+    if opts["timeout_seconds"] is not None:
+        kwargs["timeout"] = opts["timeout_seconds"]
+
+    try:
+        return requests.request(method, url, **kwargs)
+    except requests.exceptions.Timeout:
+        raise TimeoutError("Request timed out")
 
 
 def __make_url(portal_url, *arg):
@@ -37,7 +56,11 @@ def __make_url(portal_url, *arg):
 
     url = portal_url
     for path_element in arg:
-        url = urljoin(portal_url, path_element)
+        while url.endswith("/"):
+            url = url[:-1]
+        while path_element.startswith("/"):
+            path_element = path_element[1:]
+        url = url+"/"+path_element
 
     return url
 
