@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="siaskynet",
-    version="1.0.2",
+    version="1.1.0",
     author="Peter-Jan Brone",
     author_email="peterjan.brone@gmail.com",
     description="Skynet SDK",
@@ -15,6 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'requests',
+        'responses',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

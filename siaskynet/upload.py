@@ -21,12 +21,21 @@ def __default_upload_options():
 def upload_file(path, custom_opts={}):
     """Uploads file at path with the given options."""
 
-    skylink = upload_file_request(path, custom_opts).json()["skylink"]
-    return utils.uri_skynet_prefix() + skylink
+    r = upload_file_request(path, custom_opts)
+    sia_url = utils.uri_skynet_prefix() + r.json()["skylink"]
+    r.close()
+    return sia_url
 
 
 def upload_file_request(path, custom_opts={}):
-    """Posts request to upload file."""
+    """
+    Posts request to upload file.
+
+    :param str path: The local path of the file to upload.
+    :param dict custom_opts: Custom options. See upload_file.
+    :return: the full response
+    :rtype: dict
+    """
 
     opts = __default_upload_options()
     opts.update(custom_opts)
