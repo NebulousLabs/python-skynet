@@ -18,7 +18,7 @@ def __default_unpin_options():
 
     obj = utils.__default_options("")
     obj['endpoint_path_unpin_dir'] = "/renter/dir"
-    obj['endpoint_path_unpin_file'] = "/renter/file"
+    obj['endpoint_path_unpin_file'] = "/renter/delete"
 
     return obj
 
