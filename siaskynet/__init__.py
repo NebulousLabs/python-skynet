@@ -33,13 +33,11 @@ class SkynetClient():
     )
     # pylint: enable=import-outside-toplevel
 
-    def __init__(self, portal_url=None, custom_opts=None):
-        if portal_url is None:
+    def __init__(self, portal_url=""):
+        if portal_url == "":
             portal_url = utils.default_portal_url()
         self.portal_url = portal_url
-        if custom_opts is None:
-            custom_opts = {}
-        self.custom_opts = custom_opts
+        self.custom_opts = {}
 
     def execute_request(self, method, opts, **kwargs):
         """Makes and executes a request with the given options."""
@@ -67,6 +65,9 @@ class SkynetClient():
             raise TimeoutError("Request timed out")
 
     def set_custom_opts(self, custom_opts):
-        """Overrides any existing custom options with the new options."""
+        """Overrides any existing custom options with the new options. When
+        making an API call, options are checked with the following preference:
+        function options > client options > default options for the
+        function."""
 
         self.custom_opts.update(custom_opts)
