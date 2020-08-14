@@ -9,7 +9,9 @@ import responses
 import siaskynet as skynet
 
 
-skylink = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+SKYLINK = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+
+client = skynet.SkynetClient()
 
 
 @responses.activate
@@ -22,14 +24,14 @@ def test_download_file():
 
     responses.add(
         responses.GET,
-        'https://siasky.net/'+skylink,
+        'https://siasky.net/'+SKYLINK,
         "test\n",
         status=200
     )
 
     dst_file = tempfile.NamedTemporaryFile().name
     print("Downloading to "+dst_file)
-    skynet.download_file(dst_file, skylink)
+    client.download_file(dst_file, SKYLINK)
     if not filecmp.cmp(src_file, dst_file):
         sys.exit("ERROR: Downloaded file at "+dst_file +
                  " did not equal uploaded file "+src_file)

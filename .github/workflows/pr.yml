@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: make install
+      run: pipenv run install
     - name: Build
       run: pipenv run build
     - name: Lint

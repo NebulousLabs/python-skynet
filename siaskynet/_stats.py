@@ -5,15 +5,15 @@
 from . import utils
 
 
-def __default_get_stats_options():
+def default_get_stats_options():
     """Returns the default stats options."""
 
-    obj = utils.__default_options("/skynet/stats")
+    obj = utils.default_options("/skynet/stats")
 
     return obj
 
 
-def get_stats(custom_opts={}):
+def get_stats(self, custom_opts=None):
     """Returns statistical information about Skynet, e.g. number of files \
     uploaded."""
 

@@ -1,5 +1,3 @@
 [MESSAGES CONTROL]
 
-disable=invalid-name,
-        protected-access,
-        dangerous-default-value
+disable=

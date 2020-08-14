@@ -10,6 +10,8 @@ import siaskynet as skynet
 SKYLINK = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
 SIALINK = skynet.uri_skynet_prefix() + SKYLINK
 
+client = skynet.SkynetClient()
+
 
 @responses.activate
 def test_upload_file():
@@ -27,7 +29,7 @@ def test_upload_file():
     )
 
     print("Uploading file "+src_file)
-    sialink2 = skynet.upload_file(src_file)
+    sialink2 = client.upload_file(src_file)
     if SIALINK != sialink2:
         sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
@@ -41,8 +43,8 @@ def test_upload_file():
     body = responses.calls[0].request.body
     assert str(body).find('Content-Disposition: form-data; name="file"; \
 filename="file1"') != -1
-    with open(src_file, 'r') as fd:
-        contents = fd.read().strip()
+    with open(src_file, 'r') as file_h:
+        contents = file_h.read().strip()
         assert str(body).find(contents) != -1
 
     assert len(responses.calls) == 1
@@ -65,7 +67,7 @@ def test_upload_file_custom_filename():
     )
 
     print("Uploading file "+src_file)
-    sialink2 = skynet.upload_file(src_file, {'custom_filename': custom_name})
+    sialink2 = client.upload_file(src_file, {'custom_filename': custom_name})
     if SIALINK != sialink2:
         sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
@@ -74,8 +76,8 @@ def test_upload_file_custom_filename():
     body = responses.calls[0].request.body
     assert str(body).find('Content-Disposition: form-data; name="file"; \
 filename="'+custom_name+'"') != -1
-    with open(src_file, 'r') as fd:
-        contents = fd.read().strip()
+    with open(src_file, 'r') as file_h:
+        contents = file_h.read().strip()
         assert str(body).find(contents) != -1
 
     assert len(responses.calls) == 1
@@ -97,7 +99,7 @@ def test_upload_file_api_key():
     )
 
     print("Uploading file "+src_file)
-    sialink2 = skynet.upload_file(src_file, {"api_key": "foobar"})
+    sialink2 = client.upload_file(src_file, {"api_key": "foobar"})
     if SIALINK != sialink2:
         sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
@@ -114,28 +116,53 @@ def test_upload_file_custom_user_agent():
     """Test uploading a file with authorization."""
 
     src_file = "./testdata/file1"
+    client2 = skynet.SkynetClient(
+        "https://testportal.net",
+        {"custom_user_agent": "Sia-Agent"}
+    )
 
-    # Upload a file with an API password set.
+    # Upload a file using the client's user agent.
 
     responses.add(
         responses.POST,
-        "https://siasky.net/skynet/skyfile",
+        "https://testportal.net/skynet/skyfile",
         json={"skylink": SKYLINK},
         status=200,
     )
 
     print("Uploading file "+src_file)
-    sialink2 = skynet.upload_file(src_file, {"custom_user_agent": "Sia-Agent"})
+    sialink2 = client2.upload_file(src_file)
     if SIALINK != sialink2:
         sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)
     print("File upload successful, sialink: " + sialink2)
 
     headers = responses.calls[0].request.headers
-    print(headers)
     assert headers["User-Agent"] == "Sia-Agent"
 
-    assert len(responses.calls) == 1
+    # Upload a file with a new user agent set.
+
+    responses.add(
+        responses.POST,
+        "https://testportal.net/skynet/skyfile",
+        json={"skylink": SKYLINK},
+        status=200,
+    )
+
+    print("Uploading file "+src_file)
+    sialink2 = client2.upload_file(
+        src_file,
+        {"custom_user_agent": "Sia-Agent-2"}
+    )
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
+                 ", received "+sialink2)
+    print("File upload successful, sialink: " + sialink2)
+
+    headers = responses.calls[1].request.headers
+    assert headers["User-Agent"] == "Sia-Agent-2"
+
+    assert len(responses.calls) == 2
 
 
 @responses.activate
@@ -154,7 +181,7 @@ def test_upload_directory():
     )
 
     print('Uploading dir '+src_dir)
-    sialink2 = skynet.upload_directory(src_dir)
+    sialink2 = client.upload_directory(src_dir)
     if SIALINK != sialink2:
         sys.exit('ERROR: expected returned sialink '+SIALINK +
                  ', received '+sialink2)
@@ -195,7 +222,7 @@ def test_upload_directory_custom_dirname():
     )
 
     print('Uploading dir '+src_dir)
-    sialink2 = skynet.upload_directory(
+    sialink2 = client.upload_directory(
         src_dir,
         {"custom_dirname": custom_dirname}
     )

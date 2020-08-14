@@ -5,22 +5,22 @@ import os
 from . import utils
 
 
-portal_url = utils.default_portal_url()
-skylink = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
+PORTAL_URL = utils.default_portal_url()
+SKYLINK = "XABvi7JtJbQSMAcDwnUnmp2FKDPjg8_tTTFP4BwMSxVdEg"
 
 
 def test_make_url():
     """Test make_url."""
 
-    assert utils.__make_url(portal_url, "/") == portal_url+"/"
-    assert utils.__make_url(portal_url, "/skynet") == portal_url+"/skynet"
-    assert utils.__make_url(portal_url, "/skynet/") == portal_url+"/skynet/"
+    assert utils.make_url(PORTAL_URL, "/") == PORTAL_URL+"/"
+    assert utils.make_url(PORTAL_URL, "/skynet") == PORTAL_URL+"/skynet"
+    assert utils.make_url(PORTAL_URL, "/skynet/") == PORTAL_URL+"/skynet/"
 
-    assert utils.__make_url(portal_url, "/", skylink) == portal_url+"/"+skylink
-    assert utils.__make_url(portal_url, "/skynet", skylink) == \
-        portal_url+"/skynet/"+skylink
-    assert utils.__make_url(portal_url, "//skynet/", skylink) == \
-        portal_url+"/skynet/"+skylink
+    assert utils.make_url(PORTAL_URL, "/", SKYLINK) == PORTAL_URL+"/"+SKYLINK
+    assert utils.make_url(PORTAL_URL, "/skynet", SKYLINK) == \
+        PORTAL_URL+"/skynet/"+SKYLINK
+    assert utils.make_url(PORTAL_URL, "//skynet/", SKYLINK) == \
+        PORTAL_URL+"/skynet/"+SKYLINK
 
 
 def test_walk_directory():
@@ -31,7 +31,7 @@ def test_walk_directory():
     # Quick test that normalizing removes the final slash.
     assert os.path.normpath(path) == "testdata"
 
-    files = utils.__walk_directory(path)
+    files = utils.walk_directory(path)
     expected_files = [
         "testdata/file1",
         "testdata/dir1/file2",
