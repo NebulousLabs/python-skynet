@@ -8,6 +8,7 @@ from . import utils
 from .utils import default_portal_url, uri_skynet_prefix
 
 
+# pylint: disable=too-few-public-methods
 class SkynetClient():
     """The Skynet Client which can be used to access Skynet."""
 
@@ -65,3 +66,5 @@ class SkynetClient():
             return requests.request(method, url, **kwargs)
         except requests.exceptions.Timeout:
             raise TimeoutError("Request timed out")
+
+# pylint: enable=too-few-public-methods
