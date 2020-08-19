@@ -116,8 +116,10 @@ def test_upload_file_custom_user_agent():
     """Test uploading a file with authorization."""
 
     src_file = "./testdata/file1"
-    client2 = skynet.SkynetClient("https://testportal.net")
-    client2.set_custom_opts({"custom_user_agent": "Sia-Agent"})
+    client2 = skynet.SkynetClient(
+        "https://testportal.net",
+        {"custom_user_agent": "Sia-Agent"}
+    )
 
     # Upload a file using the client's user agent.
 
