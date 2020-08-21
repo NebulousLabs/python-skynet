@@ -17,7 +17,16 @@ def default_options(endpoint_path):
 
 
 def default_portal_url():
-    """Returns the default portal URL."""
+    """DefaultPortalURL intelligently selects a default portal."""
+
+    # TODO: This will be smarter. See
+    # https://github.com/NebulousLabs/skynet-docs/issues/21.
+
+    return default_skynet_portal_url()
+
+
+def default_skynet_portal_url():
+    """Returns the default Skynet portal URL."""
 
     return 'https://siasky.net'
 
