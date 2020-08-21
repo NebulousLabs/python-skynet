@@ -64,7 +64,7 @@ class SkynetClient():
 
         try:
             return requests.request(method, url, **kwargs)
-        except requests.exceptions.Timeout:
-            raise TimeoutError("Request timed out")
+        except requests.exceptions.Timeout as err:
+            raise TimeoutError("Request timed out") from err
 
 # pylint: enable=too-few-public-methods
