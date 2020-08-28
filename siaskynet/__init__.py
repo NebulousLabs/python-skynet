@@ -15,8 +15,6 @@ class SkynetClient():
     # Imported methods
 
     # pylint: disable=import-outside-toplevel
-    from ._blocklist import get_blocklist, update_blocklist
-    from ._convert import convert
     from ._download import (
         download_file, download_file_request, metadata, metadata_request
     )
@@ -24,10 +22,6 @@ class SkynetClient():
         add_skykey, create_skykey, get_skykey_by_id, get_skykey_by_name,
         get_skykeys
     )
-    from ._list import list_files
-    from ._pin import pin, unpin
-    from ._portals import get_portals, update_portals
-    from ._stats import get_stats
     from ._upload import (
         upload_file, upload_file_request, upload_file_request_with_chunks,
         upload_directory, upload_directory_request
