@@ -43,14 +43,14 @@ def download_file_request(self, skylink, custom_opts=None, stream=False):
     )
 
 
-def metadata(self, skylink, custom_opts=None):
+def get_metadata(self, skylink, custom_opts=None):
     """Downloads metadata from given skylink."""
 
-    response = self.metadata_request(skylink, custom_opts)
+    response = self.get_metadata_request(skylink, custom_opts)
     return json.loads(response.headers["skynet-file-metadata"])
 
 
-def metadata_request(self, skylink, custom_opts=None, stream=False):
+def get_metadata_request(self, skylink, custom_opts=None, stream=False):
     """Posts request to get metadata from given skylink."""
 
     opts = default_download_options()

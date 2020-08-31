@@ -16,7 +16,8 @@ class SkynetClient():
 
     # pylint: disable=import-outside-toplevel
     from ._download import (
-        download_file, download_file_request, metadata, metadata_request
+        download_file, download_file_request, get_metadata,
+        get_metadata_request
     )
     from ._encryption import (
         add_skykey, create_skykey, get_skykey_by_id, get_skykey_by_name,
