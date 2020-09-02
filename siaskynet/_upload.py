@@ -6,10 +6,10 @@ import os
 from . import utils
 
 
-def __default_upload_options():
+def default_upload_options():
     """Returns the default upload options."""
 
-    obj = utils.__default_options("/skynet/skyfile")
+    obj = utils.default_options("/skynet/skyfile")
     obj['portal_file_fieldname'] = 'file'
     obj['portal_directory_file_fieldname'] = 'files[]'
     obj['custom_filename'] = ''
@@ -18,16 +18,16 @@ def __default_upload_options():
     return obj
 
 
-def upload_file(path, custom_opts={}):
+def upload_file(self, path, custom_opts=None):
     """Uploads file at path with the given options."""
 
-    r = upload_file_request(path, custom_opts)
-    sia_url = utils.uri_skynet_prefix() + r.json()["skylink"]
-    r.close()
+    response = self.upload_file_request(path, custom_opts)
+    sia_url = utils.uri_skynet_prefix() + response.json()["skylink"]
+    response.close()
     return sia_url
 
 
-def upload_file_request(path, custom_opts={}):
+def upload_file_request(self, path, custom_opts=None):
     """
     Posts request to upload file.
 
@@ -37,47 +37,47 @@ def upload_file_request(path, custom_opts={}):
     :rtype: dict
     """
 
-    opts = __default_upload_options()
-    opts.update(custom_opts)
+    opts = default_upload_options()
+    opts.update(self.custom_opts)
+    if custom_opts is not None:
+        opts.update(custom_opts)
 
     path = os.path.normpath(path)
     if not os.path.isfile(path):
         print("Given path is not a file")
         return None
 
-    with open(path, 'rb') as fd:
-        url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
+    with open(path, 'rb') as file_h:
         filename = opts['custom_filename'] if opts['custom_filename'] \
-            else os.path.basename(fd.name)
-        files = {opts['portal_file_fieldname']: (filename, fd)}
+            else os.path.basename(file_h.name)
+        files = {opts['portal_file_fieldname']: (filename, file_h)}
 
-        return utils.__execute_request(
+        return self.execute_request(
             "POST",
-            url,
             opts,
             files=files,
         )
 
 
-def upload_file_request_with_chunks(path, custom_opts={}):
+def upload_file_request_with_chunks(self, path, custom_opts=None):
     """Posts request to upload file with chunks."""
 
-    opts = __default_upload_options()
-    opts.update(custom_opts)
+    opts = default_upload_options()
+    opts.update(self.custom_opts)
+    if custom_opts is not None:
+        opts.update(custom_opts)
 
     path = os.path.normpath(path)
     if not os.path.isfile(path):
         print("Given path is not a file")
         return None
 
-    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
     filename = opts['custom_filename'] if opts['custom_filename'] else path
     params = {filename: filename}
     headers = {'Content-Type': 'application/octet-stream'}
 
-    return utils.__execute_request(
+    return self.execute_request(
         "POST",
-        url,
         opts,
         data=path,
         headers=headers,
@@ -85,20 +85,22 @@ def upload_file_request_with_chunks(path, custom_opts={}):
     )
 
 
-def upload_directory(path, custom_opts={}):
+def upload_directory(self, path, custom_opts=None):
     """Uploads directory at path with the given options."""
 
-    r = upload_directory_request(path, custom_opts)
-    sia_url = utils.uri_skynet_prefix() + r.json()["skylink"]
-    r.close()
+    response = self.upload_directory_request(path, custom_opts)
+    sia_url = utils.uri_skynet_prefix() + response.json()["skylink"]
+    response.close()
     return sia_url
 
 
-def upload_directory_request(path, custom_opts={}):
+def upload_directory_request(self, path, custom_opts=None):
     """Posts request to upload directory."""
 
-    opts = __default_upload_options()
-    opts.update(custom_opts)
+    opts = default_upload_options()
+    opts.update(self.custom_opts)
+    if custom_opts is not None:
+        opts.update(custom_opts)
 
     path = os.path.normpath(path)
     if not os.path.isdir(path):
@@ -107,7 +109,7 @@ def upload_directory_request(path, custom_opts={}):
 
     ftuples = []
     basepath = path if path == '/' else path + '/'
-    files = list(utils.__walk_directory(path).keys())
+    files = list(utils.walk_directory(path).keys())
     for filepath in files:
         assert filepath.startswith(basepath)
         ftuples.append((opts['portal_directory_file_fieldname'],
@@ -115,12 +117,10 @@ def upload_directory_request(path, custom_opts={}):
 
     dirname = opts['custom_dirname'] if opts['custom_dirname'] else path
 
-    url = utils.__make_url(opts['portal_url'], opts['endpoint_path'])
     params = {"filename": dirname}
 
-    return utils.__execute_request(
+    return self.execute_request(
         "POST",
-        url,
         opts,
         files=ftuples,
         params=params,

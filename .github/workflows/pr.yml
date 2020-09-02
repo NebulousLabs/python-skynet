@@ -22,7 +22,6 @@ jobs:
     - name: Build
       run: pipenv run build
     - name: Lint
-      if: matrix.python-version >= 3.0
       run: pipenv run lint
     - name: Test
       run: pipenv run test

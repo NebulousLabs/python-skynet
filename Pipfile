@@ -5,6 +5,7 @@ verify_ssl = true
 
 [scripts]
 build = "make build"
+install = "make install"
 lint = "make lint"
 test = "make test"
 
