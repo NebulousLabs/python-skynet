@@ -1,5 +1,11 @@
 # Skynet Python SDK
 
+[![Version](https://img.shields.io/pypi/v/siaskynet)](https://pypi.org/project/siaskynet)
+[![Python](https://img.shields.io/pypi/pyversions/siaskynet)](https://pypi.org/project/siaskynet)
+[![Build Status](https://img.shields.io/github/workflow/status/NebulousLabs/python-skynet/Pull%20Request)](https://github.com/NebulousLabs/python-skynet/actions)
+[![Contributors](https://img.shields.io/github/contributors/NebulousLabs/python-skynet)](https://github.com/NebulousLabs/python-skynet/graphs/contributors)
+[![License](https://img.shields.io/pypi/l/siaskynet)](https://pypi.org/project/siaskynet)
+
 An SDK for integrating Skynet into Python applications.
 
 ## Instructions
