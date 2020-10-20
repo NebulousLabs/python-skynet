@@ -14,7 +14,7 @@ We recommend running your Python application using [pipenv](https://pipenv-searc
 
 ## Documentation
 
-For documentation complete with examples, please see [the Skynet SDK docs](https://nebulouslabs.github.io/skynet-docs/?python#introduction).
+For documentation complete with examples, please see [the Skynet SDK docs](https://siasky.net/docs/?python#introduction).
 
 ## Contributing
 
