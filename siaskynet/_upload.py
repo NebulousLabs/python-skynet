@@ -67,6 +67,7 @@ def upload_request(self, upload_data, custom_opts=None):
                 not isinstance(data, str) and
                 not hasattr(data, 'read')):
             # an iterator for chunked uploading
+            params['filename'] = ftuples[0][1][0]
             return self.execute_request(
                 "POST",
                 opts,
