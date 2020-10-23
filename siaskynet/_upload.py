@@ -35,10 +35,11 @@ def upload_request(self, upload_data, custom_opts=None):
     if custom_opts is not None:
         opts.update(custom_opts)
 
-    if len(upload_data) == 1:
+    filename = ''
+    # Upload as a directory if the dirname is set, even if there is only 1
+    # file.
+    if len(upload_data) == 1 and not opts['custom_dirname']:
         fieldname = opts['portal_file_fieldname']
-        # this appears to be missing in go sdk; maybe the server ignores it?
-        filename = opts['custom_filename']
     else:
         if not opts['custom_dirname']:
             raise ValueError("custom_dirname must be set when "
@@ -47,17 +48,19 @@ def upload_request(self, upload_data, custom_opts=None):
         filename = opts['custom_dirname']
 
     params = {
-        'filename': filename,
         # 'skykeyname': opts['skykey_name'],
         # 'skykeyid': opts['skyket_id'],
     }
+    if filename:
+        params['filename'] = filename
 
     ftuples = []
     for filename, data in upload_data.items():
         ftuples.append((fieldname,
                         (filename, data)))
 
-    if len(upload_data) == 1:
+    if opts['portal_file_fieldname'] == fieldname:
+        # single file
         data = ftuples[0][1][1]
         if hasattr(data, '__iter__') and (
                 not isinstance(data, bytes) and
@@ -109,12 +112,57 @@ def upload_file_request(self, path, custom_opts=None):
         return None
 
     with open(path, 'rb') as file_h:
-        if not opts['custom_filename']:
-            opts['custom_filename'] = os.path.basename(file_h.name)
+        filename = os.path.basename(file_h.name)
+        if opts['custom_filename']:
+            filename = opts['custom_filename']
 
-        upload_data = {opts['custom_filename']: file_h}
+        upload_data = {filename: file_h}
 
         return self.upload_request(upload_data, opts)
+
+
+def upload_file_with_chunks(self, chunks, custom_opts=None):
+    """
+    Uploads a chunked or streaming file with the given options.
+    For more information on chunked uploading, see:
+    https://requests.readthedocs.io/en/stable/user/advanced/#chunk-encoded-requests
+
+    :param iter data: An iterator (for chunked encoding) or file-like object
+    :param dict custom_opts: Custom options. See upload_file.
+    """
+
+    response = self.upload_file_request_with_chunks(chunks, custom_opts)
+    sia_url = utils.uri_skynet_prefix() + response.json()["skylink"]
+    response.close()
+    return sia_url
+
+
+def upload_file_request_with_chunks(self, chunks, custom_opts=None):
+    """
+    Posts request for chunked or streaming upload of a single file.
+    For more information on chunked uploading, see:
+    https://requests.readthedocs.io/en/stable/user/advanced/#chunk-encoded-requests
+
+    :param iter chunks: An iterator (for chunked encoding) or file-like object
+    :param dict custom_opts: Custom options. See upload_file.
+    :return: the full response
+    :rtype: dict
+    """
+
+    opts = default_upload_options()
+    opts.update(self.custom_opts)
+    if custom_opts is not None:
+        opts.update(custom_opts)
+
+    if opts['custom_filename']:
+        filename = opts['custom_filename']
+    else:
+        # this is the legacy behavior
+        filename = str(chunks)
+
+    upload_data = {filename: chunks}
+
+    return self.upload_request(upload_data, opts)
 
 
 def upload_directory(self, path, custom_opts=None):

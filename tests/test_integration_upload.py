@@ -273,7 +273,8 @@ def test_upload_file_chunks():
                     break
                 yield data
     chunks = chunker(src_file)
-    sialink2 = client.upload({'file1': chunks})
+    sialink2 = client.upload_file_with_chunks(chunks,
+                                              {'custom_filename': src_file})
     if SIALINK != sialink2:
         sys.exit("ERROR: expected returned sialink "+SIALINK +
                  ", received "+sialink2)

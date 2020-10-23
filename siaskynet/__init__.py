@@ -26,6 +26,7 @@ class SkynetClient():
     from ._upload import (
         upload, upload_request,
         upload_file, upload_file_request,
+        upload_file_with_chunks, upload_file_request_with_chunks,
         upload_directory, upload_directory_request
     )
     # pylint: enable=import-outside-toplevel
