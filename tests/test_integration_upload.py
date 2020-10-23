@@ -13,6 +13,23 @@ SIALINK = skynet.uri_skynet_prefix() + SKYLINK
 client = skynet.SkynetClient()
 
 
+def response_callback(request):
+    """Called by responses for HTTP requests"""
+    if hasattr(request.body, 'read'):
+        request.body = request.body.read()
+    elif not isinstance(request.body, (str, bytes)):
+        chunks = [*request.body]
+        if len(chunks) > 0 and isinstance(chunks[0], str):
+            request.body = ''.join(chunks)
+        else:
+            request.body = b''.join(chunks)
+    return (
+        200,
+        {'Content-Type': 'application/json'},
+        '{"skylink": "' + SKYLINK + '"}'
+    )
+
+
 @responses.activate
 def test_upload_file():
     """Test uploading a file."""
@@ -21,11 +38,10 @@ def test_upload_file():
 
     # upload a file
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': SKYLINK},
-        status=200
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -36,16 +52,17 @@ def test_upload_file():
     print("File upload successful, sialink: " + sialink2)
 
     headers = responses.calls[0].request.headers
-    assert headers["Content-Type"].startswith("multipart/form-data;")
+    assert headers["Content-Type"]
     assert headers["User-Agent"] == "python-requests/2.24.0"
     assert "Authorization" not in headers
 
+    params = responses.calls[0].request.params
+    assert params["filename"] == "file1"
+
     body = responses.calls[0].request.body
-    assert str(body).find('Content-Disposition: form-data; name="file"; \
-filename="file1"') != -1
-    with open(src_file, 'r') as file_h:
-        contents = file_h.read().strip()
-        assert str(body).find(contents) != -1
+    with open(src_file, 'rb') as file_h:
+        contents = file_h.read()
+        assert contents == body
 
     assert len(responses.calls) == 1
 
@@ -59,11 +76,10 @@ def test_upload_file_custom_filename():
 
     # upload a file with custom filename
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': SKYLINK},
-        status=200
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -74,11 +90,12 @@ def test_upload_file_custom_filename():
     print("File upload successful, sialink: " + sialink2)
 
     body = responses.calls[0].request.body
-    assert str(body).find('Content-Disposition: form-data; name="file"; \
-filename="'+custom_name+'"') != -1
-    with open(src_file, 'r') as file_h:
-        contents = file_h.read().strip()
-        assert str(body).find(contents) != -1
+    with open(src_file, 'rb') as file_h:
+        contents = file_h.read()
+        assert body == contents
+
+    params = responses.calls[0].request.params
+    assert params["filename"] == custom_name
 
     assert len(responses.calls) == 1
 
@@ -91,11 +108,10 @@ def test_upload_file_api_key():
 
     # Upload a file with an API password set.
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         "https://siasky.net/skynet/skyfile",
-        json={"skylink": SKYLINK},
-        status=200,
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -123,11 +139,10 @@ def test_upload_file_custom_user_agent():
 
     # Upload a file using the client's user agent.
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         "https://testportal.net/skynet/skyfile",
-        json={"skylink": SKYLINK},
-        status=200,
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -142,11 +157,10 @@ def test_upload_file_custom_user_agent():
 
     # Upload a file with a new user agent set.
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         "https://testportal.net/skynet/skyfile",
-        json={"skylink": SKYLINK},
-        status=200,
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -173,11 +187,10 @@ def test_upload_directory():
 
     # upload a directory
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': SKYLINK},
-        status=200
+        callback=response_callback
     )
 
     print('Uploading dir '+src_dir)
@@ -189,6 +202,9 @@ def test_upload_directory():
 
     headers = responses.calls[0].request.headers
     assert headers["Content-Type"].startswith("multipart/form-data;")
+
+    params = responses.calls[0].request.params
+    assert params["filename"] == "testdata"
 
     body = responses.calls[0].request.body
     assert str(body).find('Content-Disposition: form-data; name="files[]"; \
@@ -213,12 +229,11 @@ def test_upload_directory_custom_dirname():
 
     # upload a directory
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         'https://siasky.net/skynet/skyfile?filename=testdir',
         match_querystring=True,
-        json={'skylink': SKYLINK},
-        status=200
+        callback=response_callback
     )
 
     print('Uploading dir '+src_dir)
@@ -233,6 +248,9 @@ def test_upload_directory_custom_dirname():
 
     headers = responses.calls[0].request.headers
     assert headers["Content-Type"].startswith("multipart/form-data;")
+
+    params = responses.calls[0].request.params
+    assert params["filename"] == custom_dirname
 
     body = responses.calls[0].request.body
     assert str(body).find('Content-Disposition: form-data; name="files[]"; \
@@ -256,11 +274,10 @@ def test_upload_file_chunks():
 
     # upload a file
 
-    responses.add(
+    responses.add_callback(
         responses.POST,
         'https://siasky.net/skynet/skyfile',
-        json={'skylink': SKYLINK},
-        status=200
+        callback=response_callback
     )
 
     print("Uploading file "+src_file)
@@ -281,11 +298,17 @@ def test_upload_file_chunks():
     print("File upload successful, sialink: " + sialink2)
 
     headers = responses.calls[0].request.headers
+    assert headers["Content-Type"]
     assert headers["Transfer-Encoding"] == "chunked"
     assert headers["User-Agent"] == "python-requests/2.24.0"
     assert "Authorization" not in headers
 
+    params = responses.calls[0].request.params
+    assert params["filename"] == src_file
+
     body = responses.calls[0].request.body
-    assert body is chunks
+    with open(src_file, 'rb') as file_h:
+        contents = file_h.read()
+        assert contents == body
 
     assert len(responses.calls) == 1
