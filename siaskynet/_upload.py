@@ -35,10 +35,12 @@ def upload_request(self, upload_data, custom_opts=None):
     if custom_opts is not None:
         opts.update(custom_opts)
 
-    filename = ''
     # Upload as a directory if the dirname is set, even if there is only 1
     # file.
-    if len(upload_data) == 1 and not opts['custom_dirname']:
+    issinglefile = len(upload_data) == 1 and not opts['custom_dirname']
+
+    filename = ''
+    if issinglefile:
         fieldname = opts['portal_file_fieldname']
     else:
         if not opts['custom_dirname']:
@@ -59,8 +61,7 @@ def upload_request(self, upload_data, custom_opts=None):
         ftuples.append((fieldname,
                         (filename, data)))
 
-    if opts['portal_file_fieldname'] == fieldname:
-        # single file
+    if issinglefile:
         data = ftuples[0][1][1]
         if hasattr(data, '__iter__') and (
                 not isinstance(data, bytes) and
