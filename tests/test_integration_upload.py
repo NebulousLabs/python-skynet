@@ -246,3 +246,46 @@ filename="dir1/file2"') != -1
 filename="file0"') == -1
 
     assert len(responses.calls) == 1
+
+
+@responses.activate
+def test_upload_file_chunks():
+    """Test uploading a file with chunks."""
+
+    src_file = "./testdata/file1"
+
+    # upload a file
+
+    responses.add(
+        responses.POST,
+        'https://siasky.net/skynet/skyfile',
+        json={'skylink': SKYLINK},
+        status=200
+    )
+
+    print("Uploading file "+src_file)
+
+    def chunker(filename):
+        with open(filename, 'rb') as file:
+            while True:
+                data = file.read(3)
+                if not data:
+                    break
+                yield data
+    chunks = chunker(src_file)
+    sialink2 = client.upload_file_with_chunks(chunks,
+                                              {'custom_filename': src_file})
+    if SIALINK != sialink2:
+        sys.exit("ERROR: expected returned sialink "+SIALINK +
+                 ", received "+sialink2)
+    print("File upload successful, sialink: " + sialink2)
+
+    headers = responses.calls[0].request.headers
+    assert headers["Transfer-Encoding"] == "chunked"
+    assert headers["User-Agent"] == "python-requests/2.24.0"
+    assert "Authorization" not in headers
+
+    body = responses.calls[0].request.body
+    assert body is chunks
+
+    assert len(responses.calls) == 1
