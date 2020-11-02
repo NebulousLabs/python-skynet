@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0]
+
+### Added
+
+- `upload` and `upload_request` API
+- Support for chunked uploading
+
 ## [2.0.0]
 
 ### Changed
