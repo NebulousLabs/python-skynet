@@ -62,20 +62,15 @@ def upload_request(self, upload_data, custom_opts=None):
                         (filename, data)))
 
     if issinglefile:
-        data = ftuples[0][1][1]
-        if hasattr(data, '__iter__') and (
-                not isinstance(data, bytes) and
-                not isinstance(data, str) and
-                not hasattr(data, 'read')):
-            # an iterator for chunked uploading
-            params['filename'] = ftuples[0][1][0]
-            return self.execute_request(
-                "POST",
-                opts,
-                data=data,
-                headers={'Content-Type': 'application/octet-stream'},
-                params=params
-            )
+        filename, data = ftuples[0][1]
+        params['filename'] = filename
+        return self.execute_request(
+            "POST",
+            opts,
+            data=data,
+            headers={'Content-Type': 'application/octet-stream'},
+            params=params
+        )
     return self.execute_request(
         "POST",
         opts,
