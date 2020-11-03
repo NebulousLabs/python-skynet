@@ -14,15 +14,27 @@ client = skynet.SkynetClient()
 
 
 def response_callback(request):
-    """Called by responses for HTTP requests"""
+    """Called by responses for HTTP requests.
+       This function can perform any processing of
+       requests needed for tests.
+    """
+
+    # process body content
     if hasattr(request.body, 'read'):
+        # upload is a file object
+	# read the file and store its content for test to compare
         request.body = request.body.read()
     elif not isinstance(request.body, (str, bytes)):
+        # upload is a chunked iterator
+	# convert it into the iterated content
         chunks = [*request.body]
         if len(chunks) > 0 and isinstance(chunks[0], str):
             request.body = ''.join(chunks)
         else:
             request.body = b''.join(chunks)
+
+    # return the status code and headers for
+    # the responses module to provide
     return (
         200,
         {'Content-Type': 'application/json'},
