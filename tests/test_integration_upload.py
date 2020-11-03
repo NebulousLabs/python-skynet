@@ -22,11 +22,11 @@ def response_callback(request):
     # process body content
     if hasattr(request.body, 'read'):
         # upload is a file object
-	# read the file and store its content for test to compare
+        # read the file and store its content for test to compare
         request.body = request.body.read()
     elif not isinstance(request.body, (str, bytes)):
         # upload is a chunked iterator
-	# convert it into the iterated content
+        # convert it into the iterated content
         chunks = [*request.body]
         if len(chunks) > 0 and isinstance(chunks[0], str):
             request.body = ''.join(chunks)
