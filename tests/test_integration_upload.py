@@ -65,7 +65,7 @@ def test_upload_file():
 
     headers = responses.calls[0].request.headers
     assert headers["Content-Type"]
-    assert headers["User-Agent"] == "python-requests/2.24.0"
+    assert headers["User-Agent"].startswith("python-requests")
     assert "Authorization" not in headers
 
     params = responses.calls[0].request.params
@@ -312,7 +312,7 @@ def test_upload_file_chunks():
     headers = responses.calls[0].request.headers
     assert headers["Content-Type"]
     assert headers["Transfer-Encoding"] == "chunked"
-    assert headers["User-Agent"] == "python-requests/2.24.0"
+    assert headers["User-Agent"].startswith("python-requests")
     assert "Authorization" not in headers
 
     params = responses.calls[0].request.params
