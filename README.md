@@ -38,11 +38,11 @@ make install
 Now you can run
 
 ```
-make lint
+pipenv run lint
 ```
 
 or
 
 ```
-make test
+pipenv run test
 ```
