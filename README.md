@@ -10,7 +10,9 @@ An SDK for integrating Skynet into Python applications.
 
 ## Instructions
 
-We recommend running your Python application using [pipenv](https://pipenv-searchable.readthedocs.io/basics.html). You can use `siaskynet` by installing it with `pip`, adding it to your project's `Pipfile`, or by cloning this repository.
+We recommend running your Python application using [pipenv](https://pipenv-searchable.readthedocs.io/basics.html).
+
+You can use `siaskynet` by installing it with `pip`, adding it to your project's `Pipfile`, or by cloning this repository.
 
 ## Documentation
 
@@ -18,4 +20,29 @@ For documentation complete with examples, please see [the Skynet SDK docs](https
 
 ## Contributing
 
-To run lints and tests on `python-skynet`, first run `make install` to install dependencies and then `make lint` or `make test`.
+### Requirements
+
+In order to run lints and tests locally you will need to:
+
+1. Check out the repository locally.
+2. Make sure you have `make` installed (on Windows you can use [Chocolatey](https://chocolatey.org/) and run `choco install make`).
+
+### Instructions
+
+To run lints and tests on `python-skynet`, first install dependencies:
+
+```
+make install
+```
+
+Now you can run
+
+```
+pipenv run lint
+```
+
+or
+
+```
+pipenv run test
+```

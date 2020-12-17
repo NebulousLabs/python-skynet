@@ -2,6 +2,8 @@
 
 import os
 
+import platform
+
 from . import utils
 
 
@@ -39,4 +41,6 @@ def test_walk_directory():
     ]
     assert len(expected_files) == len(files)
     for expected_file in expected_files:
+        if platform.system() == "Windows":
+            expected_file = expected_file.replace("/", "\\")
         assert expected_file in files
