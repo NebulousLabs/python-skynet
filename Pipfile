@@ -15,5 +15,6 @@ pylint = "*"
 pytest = "*"
 
 [packages]
+atomicwrites = "*"
 requests = "*"
 responses = "*"

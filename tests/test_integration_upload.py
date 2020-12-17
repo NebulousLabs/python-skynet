@@ -218,15 +218,17 @@ def test_upload_directory():
     params = responses.calls[0].request.params
     assert params["filename"] == "testdata"
 
-    body = responses.calls[0].request.body
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    body = str(responses.calls[0].request.body)
+    print(body)
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file1"') != -1
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file3"') != -1
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1/file2"') != -1
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
+filename="dir1/file2"') != -1 or body.find('Content-Disposition: form-data; name="files[]"; \
+filename="dir1\\\\\\\\file2"') != -1
     # Check a file that shouldn't be there.
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file0"') == -1
 
     assert len(responses.calls) == 1
@@ -264,15 +266,17 @@ def test_upload_directory_custom_dirname():
     params = responses.calls[0].request.params
     assert params["filename"] == custom_dirname
 
-    body = responses.calls[0].request.body
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    body = str(responses.calls[0].request.body)
+    print(body)
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file1"') != -1
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file3"') != -1
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1/file2"') != -1
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
+filename="dir1/file2"') != -1 or body.find('Content-Disposition: form-data; name="files[]"; \
+filename="dir1\\\\\\\\file2"') != -1
     # Check a file that shouldn't be there.
-    assert str(body).find('Content-Disposition: form-data; name="files[]"; \
+    assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file0"') == -1
 
     assert len(responses.calls) == 1

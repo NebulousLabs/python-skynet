@@ -20,6 +20,15 @@ For documentation complete with examples, please see [the Skynet SDK docs](https
 
 ## Contributing
 
+### Requirements
+
+In order to run lints and tests locally you will need to:
+
+1. Check out the repository locally.
+2. Make sure you have `make` installed (on Windows you can use [Chocolatey](https://chocolatey.org/) and run `choco install make`).
+
+### Instructions
+
 To run lints and tests on `python-skynet`, first install dependencies:
 
 ```
