@@ -187,9 +187,8 @@ def upload_directory_request(self, path, custom_opts=None):
 
     upload_data = {}
     if platform.system() == "Windows":
-        basepath = path + "\\"
-    else:
-        basepath = path if path == '/' else path + '/'
+        path = path.replace("\\", '/')
+    basepath = path if path == '/' else path + '/'
     for filepath in utils.walk_directory(path):
         assert filepath.startswith(basepath)
         upload_data[filepath[len(basepath):]] = open(filepath, 'rb')
