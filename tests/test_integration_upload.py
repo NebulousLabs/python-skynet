@@ -225,8 +225,7 @@ filename="file1"') != -1
     assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file3"') != -1
     assert body.find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1/file2"') != -1 or body.find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1\\\\\\\\file2"') != -1
+filename="dir1/file2"') != -1
     # Check a file that shouldn't be there.
     assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file0"') == -1
@@ -273,8 +272,7 @@ filename="file1"') != -1
     assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file3"') != -1
     assert body.find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1/file2"') != -1 or body.find('Content-Disposition: form-data; name="files[]"; \
-filename="dir1\\\\\\\\file2"') != -1
+filename="dir1/file2"') != -1
     # Check a file that shouldn't be there.
     assert body.find('Content-Disposition: form-data; name="files[]"; \
 filename="file0"') == -1

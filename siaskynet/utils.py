@@ -2,6 +2,7 @@
 """
 
 import os
+import platform
 
 
 def default_options(endpoint_path):
@@ -73,5 +74,7 @@ def walk_directory(path):
             files.update(walk_directory(subdir))
         for subfile in subfiles:
             fullpath = os.path.join(root, subfile)
+            if platform.system() == "Windows":
+                fullpath = fullpath.replace("\\", "/")
             files[fullpath] = True
     return files
