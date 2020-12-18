@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0]
+
+_This release adds Windows support._
+
+### Added
+
+- Windows is now fully supported
+
+### Changed
+
+- A bug with directory uploads on Windows has been fixed
+
 ## [2.1.0]
 
 ### Added
