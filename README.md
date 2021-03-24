@@ -1,5 +1,7 @@
 # Skynet Python SDK
 
+> :warning: This repo has been archived and moved under the new [SkynetHQ](https://github.com/SkynetHQ) repo [here](https://github.com/SkynetHQ/skynet-blogger)
+
 [![Version](https://img.shields.io/pypi/v/siaskynet)](https://pypi.org/project/siaskynet)
 [![Python](https://img.shields.io/pypi/pyversions/siaskynet)](https://pypi.org/project/siaskynet)
 [![Build Status](https://img.shields.io/github/workflow/status/NebulousLabs/python-skynet/Pull%20Request)](https://github.com/NebulousLabs/python-skynet/actions)
